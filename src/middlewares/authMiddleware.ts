@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import User from '../models/User';
+import User from '../models/User.model';
 import {NextFunction, Request, Response} from 'express';
 import {
   generateAccessToken,
   generateRefreshToken,
   getUserData,
 } from '../utils/auth';
-import redisClient from '../db/redis';
+import redisClient from '../db/config/redis';
 
 dotenv.config();
 
@@ -134,8 +134,8 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
 
     if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
 
-    userData.refreshTokens = refreshTokens.filter(
-      (token: string) => bcrypt.compare(refreshToken, token)
+    userData.refreshTokens = refreshTokens.filter((token: string) =>
+      bcrypt.compare(refreshToken, token)
     );
 
     await redisClient.set(matricNo, JSON.stringify(userData), {

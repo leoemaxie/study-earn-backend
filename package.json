@@ -22,6 +22,7 @@
     "posttest": "npm run lint"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.0.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -29,10 +30,13 @@
     "@types/node": "20.12.7",
     "gts": "^5.3.1",
     "nodemon": "^3.1.4",
+    "sequelize": "^6.37.3",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.41",
     "@sequelize/postgres": "^7.0.0-alpha.41",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",

@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bycrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import User from '../models/User';
-import redisClient from '../db/redis';
+import User from '../models/User.model';
+import redisClient from '../db/config/redis';
 
 dotenv.config();
 
@@ -38,7 +38,10 @@ const getUserData = async (userId: string) => {
   return JSON.parse(userData);
 };
 
-const generateAccessToken = async (user: User, cb: (accessToken: string) => Promise<void>) => {
+const generateAccessToken = async (
+  user: User,
+  cb: (accessToken: string) => Promise<void>
+) => {
   generateToken(
     user,
     '15m',

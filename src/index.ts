@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
 import authRoute from './routes/authRoute';
-import sequelize from './db/db.config';
 import errorMiddleware from './middlewares/errorMiddleware';
 
 dotenv.config();
@@ -28,6 +27,4 @@ app.use((req, res) => {
 
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
-  await sequelize.sync({force: true});
-  console.log('Database synced');
 });
