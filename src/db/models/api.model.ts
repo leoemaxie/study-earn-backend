@@ -33,9 +33,9 @@ export default class ApiKey extends Model<
   @Attribute(DataTypes.TEXT)
   declare description: string;
 
-  @NotNull
-  @BelongsTo(() => School, 'schoolId')
-  declare schoolId: NonAttribute<School>;
+  @Attribute(DataTypes.UUID)
+  @Default(sql.uuidV4)
+  declare schoolId: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

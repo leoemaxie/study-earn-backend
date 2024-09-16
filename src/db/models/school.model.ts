@@ -13,10 +13,12 @@ import {
   Default,
   HasMany,
   PrimaryKey,
+  HasOne,
 } from '@sequelize/core/decorators-legacy';
 import Department from './department.model';
 import Staff from './staff.model';
 import Student from './student.model';
+import ApiKey from './api.model';
 
 export default class School extends Model<
   InferAttributes<School>,
@@ -24,8 +26,11 @@ export default class School extends Model<
 > {
   @PrimaryKey
   @Attribute(DataTypes.UUID)
-  @Default(sql.uuidV4)
-  declare schoolId: CreationOptional<string>;
+  @NotNull
+  declare schoolId: string;
+
+  @HasOne(() => ApiKey, 'schoolId')
+  declare apiKey?: NonAttribute<ApiKey>;
 
   @NotNull
   @Attribute(DataTypes.STRING)

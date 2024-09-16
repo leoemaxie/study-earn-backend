@@ -11,6 +11,7 @@ import {
   NotNull,
   Default,
   PrimaryKey,
+  AllowNull,
 } from '@sequelize/core/decorators-legacy';
 
 export default class User extends Model<
@@ -41,6 +42,18 @@ export default class User extends Model<
   @Attribute(DataTypes.STRING(255))
   @Default('')
   declare lastName: CreationOptional<string>;
+
+  @Attribute(DataTypes.INTEGER)
+  @AllowNull
+  declare phoneNumber: number | null;
+
+  @Attribute(DataTypes.DATE)
+  @AllowNull
+  declare dob: Date | null;
+
+  @Attribute(DataTypes.DATE)
+  @AllowNull
+  declare joinedAt: Date | null;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
