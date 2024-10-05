@@ -1,0 +1,4 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "postAttachCommand": "sudo service postgresql start && sudo service redis-server start && cd auth_server && npm run dev && gh codespace ports visibility 3000:public -c $CODESPACE_NAME"
+}
