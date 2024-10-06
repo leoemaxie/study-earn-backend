@@ -1,18 +1,24 @@
 import jwt from 'jsonwebtoken';
 import bycrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import User from '../db/models/user.model';
 import redisClient from '../db/config/redis';
 import crypto from 'crypto';
-import {NotFound} from '../utils/error';
+import {IUser, User} from '../db/schema/user.schema';
+import {NotFound} from '../errors/error';
 
 dotenv.config();
 
-const generateToken = (user: User, time: string, secret: string) => {
+const generateToken = (user: IUser, time: string, secret: string) => {
   try {
-    const {id, role} = user;
+    const payload = {
+      sub: user.sub,
+      role: user.role,
+    };
 
-    return jwt.sign({id, role}, secret, {expiresIn: time, subject: id});
+    return jwt.sign(payload, secret, {
+      expiresIn: time,
+      algorithm: 'RS256',
+    });
   } catch (error) {
     return null;
   }
@@ -25,7 +31,7 @@ const saveRefreshToken = async (userId: string, refreshToken: string) => {
   const user = await getUserData(userId);
   const tokenHash = await bycrypt.hash(refreshToken, 10);
 
-  user.refreshTokens = {...user.refreshTokens, tokenHash};
+  user.refreshTokens = [...user.refreshTokens, tokenHash];
   await redisClient.set(userId, JSON.stringify(user), {EX: 60 * 60 * 24 * 7});
   return true;
 };
@@ -41,7 +47,7 @@ const getUserData = async (userId: string) => {
   return JSON.parse(userData);
 };
 
-const generateAccessToken = (user: User) => {
+const generateAccessToken = (user: IUser) => {
   const token = generateToken(
     user,
     '15m',
@@ -53,7 +59,7 @@ const generateAccessToken = (user: User) => {
   return token;
 };
 
-const generateRefreshToken = async (user: User) => {
+const generateRefreshToken = async (user: IUser) => {
   const refreshToken = generateToken(
     user,
     '7d',
@@ -62,29 +68,27 @@ const generateRefreshToken = async (user: User) => {
 
   if (!refreshToken) throw new Error('Error generating refresh token');
 
-  if (!(await saveRefreshToken(user.id, refreshToken))) {
+  if (!(await saveRefreshToken(user.sub.toString(), refreshToken))) {
     throw new Error('Error saving refresh token');
   }
+
+  return refreshToken;
 };
 
 const resetPassword = async (email: string) => {
-  try {
-    const user = await User.findOne({where: {email}});
-    if (!user) throw new NotFound('User not found');
+  const user = await User.findOne({email});
+  if (!user) throw new NotFound('User not found');
 
-    const token = crypto.randomBytes(20).toString('hex');
-    // const emailServiceUrl = process.env.EMAIL_SERVICE_URL || 'http://email-service/send-email';
+  const token = crypto.randomBytes(20).toString('hex');
+  // const emailServiceUrl = process.env.EMAIL_SERVICE_URL || 'http://email-service/send-email';
 
-    const message = {
-      to: email,
-      subject: 'Password Reset',
-      body: `Your password reset token is: ${token}`,
-    };
+  const message = {
+    to: email,
+    subject: 'Password Reset',
+    body: `Your password reset token is: ${token}`,
+  };
 
-    redisClient.publish('email-service', JSON.stringify(message));
-  } catch (error) {
-    throw error;
-  }
+  redisClient.publish('email-service', JSON.stringify(message));
 };
 
 export {generateAccessToken, generateRefreshToken, getUserData, resetPassword};

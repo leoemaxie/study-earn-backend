@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import {NextFunction, Request, Response} from 'express';
-import {Unauthorized} from '../utils/error';
+import {Unauthorized} from '../errors/error';
 
 dotenv.config();
 
-export async function authMiddleware(
+export default async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
@@ -17,11 +17,12 @@ export async function authMiddleware(
 
   return jwt.verify(
     token,
-    process.env.ACCESS_TOKEN_SECRET || '',
-    (error: any, user: any) => {
+    process.env.ACCESS_TOKEN_PUBLIC_KEY || '',
+    {algorithms: ['RS256']},
+    (error: unknown, user: any) => {
       if (error) return next(new Unauthorized());
       req.user = user;
-      return res.json(user);
+      return next();
     }
   );
 }

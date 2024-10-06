@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
-import CustomError from '../utils/error';
-import {ValidationError} from 'sequelize';
+import {Error as MongooseError} from 'mongoose';
+import CustomError from '../errors/error';
 
 export default function errorMiddleware(
   error: Error,
@@ -12,7 +12,10 @@ export default function errorMiddleware(
     return res.status(error.status).json({error: error.message});
   }
 
-  if (error instanceof ValidationError) {
+  if (
+    error instanceof MongooseError.ValidatorError ||
+    error instanceof MongooseError.ValidationError
+  ) {
     return res.status(400).json({error: error.message});
   }
 
