@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1beta1 
+kind: HTTPRoute
+metadata:
+  name: stde-http-route
+spec:
+rules:
+    - match:
+        pathType: Prefix
+        prefix: /auth
+      action:
+        forwardTo:
+          - serviceName: auth-service
+            port: 8080
+    - match:
+        pathType: Prefix
+        prefix: /user
+      action:
+        forwardTo:
+          - serviceName: user-service
+            port: 8080
+    - match:
+        pathType: Prefix
+        prefix: /chat
+      action:
+        forwardTo:
+          - serviceName: chat-service
+            port: 8080
+    - match:
+        pathType: Prefix
+        prefix: /payment
+      action:
+        forwardTo:
+          - serviceName: payment-service
+            port: 8080
+    - match:
+        pathType: Prefix
+        prefix: /file
+      action:
+        forwardTo:
+          - serviceName: file-service
+            port: 8080
+    - match:
+        pathType: Prefix
+        prefix: /gateway
+
+
