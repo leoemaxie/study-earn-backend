@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 import {BadRequest, NotFound} from '../utils/error';
-import {Role} from '../db/models/enum/role';
+import {Role} from '../db/postgres/models/enum/role';
 import {USER_FIELDS, STUDENT_FIELDS} from '../utils/allowedFields';
-import User from '../db/models/user.model';
-import Student from '../db/models/student.model';
+import User from '../db/postgres/models/user.model';
+import Student from '../db/postgres/models/student.model';
 
 export async function getUserData(
   req: Request,
@@ -11,7 +11,7 @@ export async function getUserData(
   next: NextFunction
 ) {
   try {
-    const {id} = req.user;
+    const {id} = req.user as User;
     const user = await User.findByPk(id);
 
     return res.status(200).json({data: user});
@@ -26,7 +26,7 @@ export async function updateUserData(
   next: NextFunction
 ) {
   try {
-    const {id, role} = req.user;
+    const {id, role} = req.user as User;
 
     Object.keys(req.body).forEach(key => {
       if (role === Role.STUDENT && !STUDENT_FIELDS.includes(key)) {
@@ -56,7 +56,7 @@ export async function deleteUserData(
   next: NextFunction
 ) {
   try {
-    const {id} = req.user;
+    const {id} = req.user as User;
     const user = await User.findByPk(id);
     if (!user) {
       throw new NotFound('User not found');
@@ -72,7 +72,7 @@ export async function deleteUserData(
 
 export async function getStudents (req: Request, res: Response, next: NextFunction) {
   try {
-    const {id} = req.user;
+    const {id} = req.user as User;
     const user = await Student.findByPk(id);
     if (!user) {
       throw new NotFound('User not found');

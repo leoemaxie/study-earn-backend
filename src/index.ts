@@ -5,8 +5,8 @@ import cors from 'cors';
 import authRoute from './routes/auth.route';
 import userRoute from './routes/user.route';
 import errorMiddleware from './middlewares/error.middleware';
-import {authMiddleware} from './middlewares/auth.middleware';
-import initializeDatabase from './db';
+import authMiddleware from './middlewares/auth.middleware';
+import initializeDatabase from './db/postgres';
 
 dotenv.config();
 

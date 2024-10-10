@@ -1,16 +1,13 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import redisClient from '../db/config/redis';
-import User from '../db/models/user.model';
+import User from '../db/postgres/models/user.model';
 import {NextFunction, Request, Response} from 'express';
 import {
   generateAccessToken,
   generateRefreshToken,
-  getUserData,
-  resetPassword as resetPasswordService,
-} from '../services/auth.service';
+} from '../services/jwt.service';
+import {resetPassword as resetPasswordService} from '../services/auth.service';
 import {BadRequest, Conflict, NotFound, Unauthorized} from '../utils/error';
-import { access } from 'fs';
 
 export async function register(
   req: Request,
@@ -19,18 +16,27 @@ export async function register(
 ) {
   try {
     const length = Object.keys(req.body || {}).length;
+    const allowedFields = [
+      'email',
+      'password',
+      'role',
+      'firstName',
+      'lastName',
+      'department',
+      // 'phoneNumber',
+    ];
 
-    if (!length || length != 3) {
+    if (!length || length !== 6) {
       throw new BadRequest('Invalid number of fields');
     }
 
-    const {email, password, role} = req.body;
-
-    if (!email || !password || !role) {
-      throw new BadRequest('Missing fields');
+    for (const field in req.body) {
+      if (!allowedFields.includes(field)) {
+        throw new BadRequest('Invalid field');
+      }
     }
 
-    if (await User.findOne({where: {email}})) {
+    if (await User.findOne({where: {email: req.body.email}})) {
       throw new Conflict('User already exists');
     }
 
@@ -44,7 +50,7 @@ export async function register(
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const length = Object.keys(req.body || {}).length;
-    if (length != 2) throw new BadRequest('Invalid number of fields');
+    if (length !== 2) throw new BadRequest('Invalid number of fields');
 
     const {email, password} = req.body;
     if (!email || !password) throw new BadRequest('Missing email or password');
@@ -53,11 +59,11 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     if (!user) throw new NotFound('User not found');
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new Unauthorized('Invalid Credentials');
+    if (!match) throw new Unauthorized('Invalid credentials');
 
     return res.status(200).json({
       accessToken: generateAccessToken(user),
-      refreshToken: generateRefreshToken(user),
+      refreshToken: await generateRefreshToken(user),
     });
   } catch (error: unknown) {
     return next(error);
@@ -67,22 +73,9 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function logout(req: Request, res: Response, next: NextFunction) {
   try {
     const refreshToken = req.body.token;
-    const {email} = req.user as User;
+    const email = req.body.email;
 
-    if (!refreshToken || !email) return res.sendStatus(401);
-
-    const userData = await getUserData(email);
-    const refreshTokens = userData.refreshTokens;
-
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
-
-    userData.refreshTokens = refreshTokens.filter((token: string) =>
-      bcrypt.compare(refreshToken, token)
-    );
-
-    await redisClient.set(email, JSON.stringify(userData), {
-      EX: 60 * 60 * 24 * 7,
-    });
+    if (!refreshToken || !email) throw new BadRequest('Missing token or email');
 
     return res.sendStatus(204);
   } catch (error: unknown) {
@@ -101,17 +94,17 @@ export async function refreshToken(
 
     return jwt.verify(
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET || '',
+      process.env.REFRESH_TOKEN_PUBLIC_KEY || '',
       async (error: any, user: any) => {
         if (error) return next(new Unauthorized());
 
-        // const userData = await getUserData(user.id);
-        // const refreshTokens = userData.refreshTokens;
-
-        // if (!refreshTokens.includes(refreshToken)) return next(new Unauthorized());
-
-        return res.status(200).json({ accessToken: generateAccessToken(user)});
-      })
+        return res.status(200).json({
+          accessToken: generateAccessToken(user),
+          expiresIn: 60 * 15,
+          tokenType: 'Bearer',
+        });
+      }
+    );
   } catch (error: unknown) {
     next(error);
   }

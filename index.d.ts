@@ -1,4 +1,4 @@
-import User from './src/models/User.model';
+import User from './src/db/postgres/models/user.model';
 
 declare module 'express-serve-static-core' {
   export interface Request {
