@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import {Server} from 'socket.io';
-import { connect } from 'mongoose';
+import {connect} from 'mongoose';
 
 const URL = process.env.MONGO_URL || 'mongodb://localhost:27017/chat';
 
@@ -44,7 +44,9 @@ export async function connectIO(io: Server) {
     });
 
     socket.on('messageToAll', data => {
-      console.log(`${socket.id} sent a message to all clients: ${data.message}`);
+      console.log(
+        `${socket.id} sent a message to all clients: ${data.message}`
+      );
 
       io.emit('message', {
         id: socket.id,

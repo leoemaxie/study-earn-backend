@@ -17,7 +17,7 @@ import {
   Table,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum/role';
-import { hashPassword } from '../../../utils/hashPassword';
+import {hashPassword} from '../../../utils/hashPassword';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -67,7 +67,7 @@ export default class User extends Model<
       },
     },
   })
-  declare firstName: CreationOptional<string>;
+  declare firstName: string;
 
   @Attribute({
     type: DataTypes.STRING(255),
@@ -79,7 +79,7 @@ export default class User extends Model<
       },
     },
   })
-  declare lastName: CreationOptional<string>;
+  declare lastName: string;
 
   @Attribute(DataTypes.DATE)
   declare dob: CreationOptional<Date>;
@@ -97,13 +97,15 @@ export default class User extends Model<
       },
     },
   })
-  declare joinedAt: CreationOptional<Date>;
+  @Attribute(DataTypes.STRING(255))
+  declare department: string;
 
+  declare joinedAt: CreationOptional<Date>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
   @Attribute({
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(20),
     validate: {
       is: {
         args: /^(\+234|0)[789]\d{9}$/,
@@ -111,7 +113,7 @@ export default class User extends Model<
       },
     },
   })
-  declare phoneNumber: CreationOptional<number>;
+  declare phoneNumber: string;
 
   @Attribute(DataTypes.DATE)
   @Default(DataTypes.NOW)

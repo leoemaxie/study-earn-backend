@@ -69,16 +69,15 @@ export async function deleteUserData(
   }
 }
 
-export async function getStudents (req: Request, res: Response, next: NextFunction) {
+export async function getMates(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    const {id} = req.user as User;
-    const user = await Student.findByPk(id);
-    if (!user) {
-      throw new NotFound('User not found');
-    }
-
-    const mates = await Student.findAll({
-      where: {id: 'user.department'},
+    const mates = await User.findAll({
+      where: {department: req.user?.department, role: Role.STUDENT},
+      attributes: ['firstName', 'lastName', 'phoneNumber'],
     });
 
     return res.status(200).json({data: mates});

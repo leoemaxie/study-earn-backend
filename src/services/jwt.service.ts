@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../db/postgres/models/user.model';
-import { Unauthorized } from '../utils/error';
 
 dotenv.config();
 

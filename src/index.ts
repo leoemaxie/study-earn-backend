@@ -9,7 +9,7 @@ import authMiddleware from './middlewares/auth.middleware';
 import initializeDatabase from './db/postgres';
 import errorMiddleware from './middlewares/error.middleware';
 import {Server} from 'socket.io';
-import { connectIO } from './chat';
+import {connectIO} from './chat';
 
 dotenv.config();
 

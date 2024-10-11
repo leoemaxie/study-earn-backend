@@ -1,5 +1,10 @@
 import {Router} from 'express';
-import {deleteUserData, getStudents, getUserData, updateUserData} from '../controllers/user.controller';
+import {
+  deleteUserData,
+  getMates,
+  getUserData,
+  updateUserData,
+} from '../controllers/user.controller';
 import fileRoute from './user.file.route';
 
 const router = Router();
@@ -7,7 +12,7 @@ const router = Router();
 router.get('/', getUserData);
 router.patch('/update', updateUserData);
 router.delete('/delete', deleteUserData);
-router.get('/students', getStudents);
+router.get('/student', getMates);
 router.use('/file', fileRoute);
 
 export default router;

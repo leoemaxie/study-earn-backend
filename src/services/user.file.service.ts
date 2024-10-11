@@ -1,8 +1,11 @@
-import supabase from "../supabase/supabase";
-import { BadRequest } from "../utils/error";
-import { Express } from "express";
+import supabase from '../supabase/supabase';
+import {BadRequest} from '../utils/error';
+import {Express} from 'express';
 
-const upload = async (file: Express.Multer.File | undefined, userId: string) => {
+const upload = async (
+  file: Express.Multer.File | undefined,
+  userId: string
+) => {
   if (!file) {
     throw new BadRequest('No file provided');
   }
@@ -28,7 +31,7 @@ const download = async (userId: string, fileName: string) => {
   }
 
   return data;
-}
+};
 
 const del = async (userId: string, fileName: string) => {
   const {data, error} = await supabase.storage
@@ -40,9 +43,13 @@ const del = async (userId: string, fileName: string) => {
   }
 
   return data;
-}
+};
 
-const update = async (userId: string, fileName: string, file: Express.Multer.File | undefined) => {
+const update = async (
+  userId: string,
+  fileName: string,
+  file: Express.Multer.File | undefined
+) => {
   if (!file) {
     throw new BadRequest('No file provided');
   }
@@ -55,6 +62,6 @@ const update = async (userId: string, fileName: string, file: Express.Multer.Fil
   }
 
   return data;
-}
+};
 
 export {upload, download, del, update};

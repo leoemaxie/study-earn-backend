@@ -1,13 +1,13 @@
-import { Schema, model } from 'mongoose';
+import {Schema, model} from 'mongoose';
 
 interface IUser {
-    id: string;
-    role: string;
+  id: string;
+  role: string;
 }
 
 const userSchema = new Schema<IUser>({
-    id: String,
-    role: String,
+  id: String,
+  role: String,
 });
 
 export default model<IUser>('User', userSchema);

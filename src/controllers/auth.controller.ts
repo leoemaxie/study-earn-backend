@@ -23,10 +23,10 @@ export async function register(
       'firstName',
       'lastName',
       'department',
-      // 'phoneNumber',
+      'phoneNumber',
     ];
 
-    if (!length || length !== 6) {
+    if (!length || length !== 7) {
       throw new BadRequest('Invalid number of fields');
     }
 

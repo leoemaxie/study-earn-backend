@@ -2,12 +2,11 @@ import dotenv from 'dotenv';
 import crypto from 'crypto';
 import User from '../db/postgres/models/user.model';
 import {NotFound} from '../utils/error';
-import {sendSMS} from './sms.service'
+import {sendSMS} from './sms.service';
 
 dotenv.config();
 
 const resetPassword = async (email: string) => {
-  try {
     const user = await User.findOne({where: {email}});
     if (!user) throw new NotFound('User not found');
 
@@ -19,9 +18,6 @@ const resetPassword = async (email: string) => {
     };
 
     await sendSMS(message);
-  } catch (error) {
-    throw error;
-  }
 };
 
 export {resetPassword};
