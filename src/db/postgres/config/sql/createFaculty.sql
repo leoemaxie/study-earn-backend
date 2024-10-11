@@ -4,16 +4,15 @@
 --     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
 --     name	VARCHAR(256),  
 -- );
-
-INSERT INTO faculty (name) VALUES ('Computing and Informatics');
-INSERT INTO faculty (name) VALUES ('Engineering and Technology');
-INSERT INTO faculty (name) VALUES ('Pure and Applied Sciences');
-INSERT INTO faculty (name) VALUES ('Arts and Social Sciences');
-INSERT INTO faculty (name) VALUES ('Management Sciences');
-INSERT INTO faculty (name) VALUES ('Environmental Sciences');
-INSERT INTO faculty (name) VALUES ('Nursing Sciences');
-INSERT INTO faculty (name) VALUES ('Clinical Sciences');
-INSERT INTO faculty (name) VALUES ('Basic Clinical Sciences');
-INSERT INTO faculty (name) VALUES ('Health Sciences');
-INSERT INTO faculty (name) VALUES ('Agricultural Sciences');
-INSERT INTO faculty (name) VALUES ('Renewable Natural Resources');
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Computing and Informatics', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Engineering and Technology', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Pure and Applied Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Arts and Social Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Management Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Environmental Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Nursing Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Clinical Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Basic Clinical Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Health Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Agricultural Sciences', NOW(), NOW());
+INSERT INTO faculty (name, created_at, updated_at) VALUES ('Renewable Natural Resources', NOW(), NOW());

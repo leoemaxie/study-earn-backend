@@ -5,7 +5,6 @@ import {
   InferCreationAttributes,
   sql,
   CreationOptional,
-  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
