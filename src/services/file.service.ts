@@ -1,6 +1,6 @@
 import supabase from "../supabase/supabase";
 import { BadRequest } from "../utils/error";
-import { Multer } from "multer";
+import { Express } from "express";
 
 const upload = async (file: Express.Multer.File, name: string, type: string) => {
   if (!file) throw new BadRequest("No file provided");

@@ -1,5 +1,6 @@
 import supabase from "../supabase/supabase";
 import { BadRequest } from "../utils/error";
+import { Express } from "express";
 
 const upload = async (file: Express.Multer.File | undefined, userId: string) => {
   if (!file) {
