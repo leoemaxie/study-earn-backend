@@ -87,6 +87,9 @@ export default class User extends Model<
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull
   declare role: string;
+  
+  @Attribute(DataTypes.STRING(255))
+  declare department: string;
 
   @Attribute({
     type: DataTypes.DATE,
@@ -97,10 +100,8 @@ export default class User extends Model<
       },
     },
   })
-  @Attribute(DataTypes.STRING(255))
-  declare department: string;
-
   declare joinedAt: CreationOptional<Date>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
