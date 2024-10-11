@@ -16,9 +16,8 @@ import {
   BelongsTo,
   Table,
 } from '@sequelize/core/decorators-legacy';
-import {hashPassword} from '../../utils/hashPassword';
 import {Role} from './enum/role';
-import School from './school.model';
+import { hashPassword } from '../../../utils/hashPassword';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -33,9 +32,6 @@ export default class User extends Model<
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull
   declare role: string;
-
-  // @BelongsTo(() => School, 'id')
-  // declare schoolId: NonAttribute<School>;
 
   @Attribute({
     type: DataTypes.STRING(255),

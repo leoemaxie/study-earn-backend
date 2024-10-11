@@ -7,7 +7,7 @@ interface IUser {
 
 const userSchema = new Schema<IUser>({
     id: String,
-    password: String,
+    role: String,
 });
 
 export default model<IUser>('User', userSchema);
