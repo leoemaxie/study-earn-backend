@@ -7,6 +7,7 @@
     "emitDecoratorMetadata": true,
     "strict": true,
     "resolvePackageJsonExports": true,
+    "noImplicitAny": false,
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "skipLibCheck": true,
