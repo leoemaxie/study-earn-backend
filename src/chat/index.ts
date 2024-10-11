@@ -2,7 +2,7 @@ import 'dotenv/config';
 import {Server} from 'socket.io';
 import {connect} from 'mongoose';
 
-const URL = process.env.MONGO_URL || 'mongodb://localhost:27017/chat';
+const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';
 
 (async () => {
   try {
