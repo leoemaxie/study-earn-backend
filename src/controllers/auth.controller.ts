@@ -41,7 +41,7 @@ export async function register(
     }
 
     await User.create({...req.body});
-    res.status(201).json({message: 'User created successfully'});
+    return res.status(201).json({message: 'User created successfully'});
   } catch (error: unknown) {
     return next(error);
   }

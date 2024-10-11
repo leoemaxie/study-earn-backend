@@ -29,10 +29,6 @@ export default class User extends Model<
   @Default(sql.uuidV4)
   declare id: CreationOptional<string>;
 
-  @Attribute(DataTypes.ENUM(...Object.values(Role)))
-  @NotNull
-  declare role: string;
-
   @Attribute({
     type: DataTypes.STRING(255),
     unique: true,
@@ -87,6 +83,10 @@ export default class User extends Model<
 
   @Attribute(DataTypes.DATE)
   declare dob: CreationOptional<Date>;
+
+  @Attribute(DataTypes.ENUM(...Object.values(Role)))
+  @NotNull
+  declare role: string;
 
   @Attribute({
     type: DataTypes.DATE,

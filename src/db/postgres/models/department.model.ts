@@ -12,13 +12,9 @@ import {
   AllowNull,
   NotNull,
   Default,
-  HasMany,
   Table,
   PrimaryKey,
 } from '@sequelize/core/decorators-legacy';
-import Course from './course.model';
-import Staff from './staff.model';
-import Student from './student.model';
 
 @Table({tableName: 'department'})
 export default class Department extends Model<
@@ -40,15 +36,6 @@ export default class Department extends Model<
   @AllowNull(true)
   @Attribute(DataTypes.STRING)
   declare description: string;
-
-  // @HasMany(() => Course, 'courseId')
-  // declare courses?: NonAttribute<Course[]>;
-
-  // @HasMany(() => Staff, 'staffId')
-  // declare staff?: NonAttribute<Staff[]>;
-
-  // @HasMany(() => Student, 'studentId')
-  // declare students?: NonAttribute<Student[]>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

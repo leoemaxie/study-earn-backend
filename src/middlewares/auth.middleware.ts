@@ -12,16 +12,18 @@ export default async function authMiddleware(
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return next(new Unauthorized());
+    if (!token) throw new Unauthorized();
 
     jwt.verify(
       token,
       process.env.ACCESS_TOKEN_PUBLIC_KEY || '',
       {algorithms: ['RS256']},
-      (error: unknown, decoded: any) => {
+      async (error: unknown, decoded: any) => {
         if (error) throw new Unauthorized('Invalid token');
-        const user = User.findByPk(decoded.sub);
-        if (!user) throw new NotFound('User not found');
+        const user = await User.findByPk(decoded.sub, { raw: true });
+        if (!user) throw new NotFound(decoded.sub);
+        req.user = user as User;
+        next();
       }
     );
   } catch (error) {

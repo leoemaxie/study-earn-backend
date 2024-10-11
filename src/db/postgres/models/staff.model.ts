@@ -13,7 +13,6 @@ import {
   PrimaryKey,
 } from '@sequelize/core/decorators-legacy';
 import User from './user.model';
-import Course from './course.model';
 
 @Table({tableName: 'staff'})
 export default class Staff extends Model<
@@ -27,8 +26,4 @@ export default class Staff extends Model<
 
   @BelongsTo(() => User, 'role')
   declare user?: NonAttribute<User>;
-
-  // @Attribute(DataTypes.STRING)
-  // @NotNull
-  // declare departmentId: string;
 }

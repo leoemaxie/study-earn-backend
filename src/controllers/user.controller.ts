@@ -11,8 +11,7 @@ export async function getUserData(
   next: NextFunction
 ) {
   try {
-    const {id} = req.user as User;
-    const user = await User.findByPk(id);
+    const {password, ...user} = req.user as User;
 
     return res.status(200).json({data: user});
   } catch (error) {
