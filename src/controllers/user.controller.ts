@@ -78,6 +78,7 @@ export async function getMates(
     const mates = await User.findAll({
       where: {department: req.user?.department, role: Role.STUDENT},
       attributes: ['firstName', 'lastName', 'phoneNumber'],
+      raw: true,
     });
 
     return res.status(200).json({data: mates});
