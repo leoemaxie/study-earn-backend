@@ -10,6 +10,7 @@ import initializeDatabase from './db/postgres';
 import errorMiddleware from './middlewares/error.middleware';
 import {Server} from 'socket.io';
 import {connectIO} from './chat';
+import schoolRoute from './routes/school.route';
 
 dotenv.config();
 
@@ -38,6 +39,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptions));
 app.use('/auth', authRoute);
 app.use(`/api/${VERSION}/user`, authMiddleware, userRoute);
+app.use(`/api/${VERSION}/chat`, authMiddleware, () => {
+  connectIO(io);
+});
+app.use(`/api/${VERSION}/school`, schoolRoute);
 app.use(errorMiddleware);
 
 app.get('/health', (req, res) => {
@@ -45,10 +50,6 @@ app.get('/health', (req, res) => {
 });
 app.use((req, res) => {
   res.status(404).json({error: 'Not found'});
-});
-
-app.use(`/api/${VERSION}/chat`, authMiddleware, (req, res) => {
-  connectIO(io);
 });
 
 httpServer.listen(PORT, async () => {
