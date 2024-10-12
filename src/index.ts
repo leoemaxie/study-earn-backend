@@ -1,18 +1,17 @@
+import 'dotenv/config';
+import 'module-alias/register';
 import express from 'express';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
 import http from 'http';
-import authRoute from './routes/auth.route';
-import userRoute from './routes/user.route';
-import authMiddleware from './middlewares/auth.middleware';
-import initializeDatabase from './db/postgres';
-import errorMiddleware from './middlewares/error.middleware';
+import authRoute from '@routes/auth.route';
+import userRoute from '@routes/user.route';
+import schoolRoute from '@routes/school.route';
+import authMiddleware from '@middlewares/auth.middleware';
+import initializeDatabase from '@db/postgres';
+import errorMiddleware from '@middlewares/error.middleware';
 import {Server} from 'socket.io';
 import {connectIO} from './chat';
-import schoolRoute from './routes/school.route';
-
-dotenv.config();
 
 const app = express();
 const httpServer = http.createServer(app);

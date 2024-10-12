@@ -19,9 +19,11 @@ export default async function authMiddleware(
       process.env.ACCESS_TOKEN_PUBLIC_KEY || '',
       {algorithms: ['RS256']},
       async (error: unknown, decoded: any) => {
-        if (error) throw new Unauthorized('Invalid token');
+        if (error) return next(new Unauthorized());
+
         const user = await User.findByPk(decoded.sub, {raw: true});
-        if (!user) throw new NotFound(decoded.sub);
+        
+        if (!user) return next(new NotFound('User not found'));
         req.user = user as User;
         next();
       }

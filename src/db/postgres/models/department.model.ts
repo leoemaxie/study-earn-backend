@@ -13,7 +13,10 @@ import {
   Default,
   Table,
   PrimaryKey,
+  HasOne,
 } from '@sequelize/core/decorators-legacy';
+import Faculty from './faculty.model';
+import { NonAttribute } from 'sequelize';
 
 @Table({tableName: 'department'})
 export default class Department extends Model<
@@ -28,13 +31,16 @@ export default class Department extends Model<
   @Attribute(DataTypes.STRING)
   @NotNull
   declare name: string;
+  
+  @HasOne(() => Faculty, 'id')
+  declare facultyId?: NonAttribute<Faculty>;
 
   @Attribute(DataTypes.STRING)
-  declare faculty: string;
+  @NotNull
+  declare code: string;
 
-  @AllowNull(true)
   @Attribute(DataTypes.STRING)
-  declare description: string;
+  declare description: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

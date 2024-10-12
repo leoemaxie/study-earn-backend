@@ -1,13 +1,10 @@
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../db/postgres/models/user.model';
+import User from '@models/user.model';
 import {NextFunction, Request, Response} from 'express';
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from '../services/jwt.service';
-import {resetPassword as resetPasswordService} from '../services/auth.service';
-import {BadRequest, Conflict, NotFound, Unauthorized} from '../utils/error';
+import {generateAccessToken, generateRefreshToken} from '@services/jwt.service';
+import {resetPassword as resetPasswordService} from '@services/auth.service';
+import {BadRequest, Conflict, NotFound, Unauthorized} from '@utils/error';
+import {verifyPassword} from '@utils/password';
 
 export async function register(
   req: Request,
@@ -56,14 +53,18 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     if (!email || !password) throw new BadRequest('Missing email or password');
 
     const user = await User.findOne({where: {email}});
+    
     if (!user) throw new NotFound('User not found');
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new Unauthorized('Invalid credentials');
+    if (!(await verifyPassword(password, user.password))) {
+      throw new Unauthorized('Invalid email or password');
+    }
 
     return res.status(200).json({
       accessToken: generateAccessToken(user),
       refreshToken: await generateRefreshToken(user),
+      expiresIn: 60 * 15,
+      tokenType: 'Bearer',
     });
   } catch (error: unknown) {
     return next(error);

@@ -1,7 +1,7 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "build",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -12,7 +12,20 @@
     "module": "NodeNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "types": ["./index.d.ts"],
+    "types": ["./src/index.d.ts"],
+    "baseUrl": "src",
+    "paths": {
+      "@utils/*": ["utils/*"],
+      "@models/*": ["db/postgres/models/*"],
+      "@schemas/*": ["db/mongodb/schemas/*"],
+      "@services/*": ["services/*"],
+      "@routes/*": ["routes/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@types/*": ["types/*"],
+      "@config/*": ["config/*"],
+      "@db/*": ["db/*"],
+    }
   },
   "include": [
     "src/**/*.ts",

@@ -10,15 +10,25 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*.{ts,json}' --exec 'ts-node' src/index.ts",
-    "start": "npm run compile && node build/src/index.js",
+    "build": "rm -rf ./build && tsc",
+    "dev": "ts-node-dev --respawn --rs src/index.ts",
+    "start": "npm run build && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "rm -rf ./build && tsc",
-    "fix": "gts fix",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "fix": "gts fix"
+  },
+  "_moduleAliases": {
+    "@routes": "build/routes/",
+    "@utils": "build/utils/",
+    "@models": "build/db/postgres/models",
+    "@schemas": "build/db/mongodb/schemas",
+    "@services": "build/services",
+    "@controllers": "build/controllers",
+    "@middlewares": "build/middlewares",
+    "@types": "build/types",
+    "@config": "build/config",
+    "@db": "build/db"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.1",
@@ -29,16 +39,15 @@
     "@types/multer": "^1.4.12",
     "@types/node": "20.12.7",
     "gts": "^5.3.1",
-    "nodemon": "^3.1.4",
+    "module-alias": "^2.2.3",
     "sequelize-cli": "^6.6.2",
-    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.3"
   },
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.41",
     "@sequelize/postgres": "^7.0.0-alpha.41",
     "@supabase/supabase-js": "^2.39.8",
-    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.0",

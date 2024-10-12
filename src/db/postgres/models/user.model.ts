@@ -5,7 +5,6 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
@@ -17,7 +16,7 @@ import {
   Table,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum/role';
-import {hashPassword} from '../../../utils/hashPassword';
+import { hashPassword } from '@utils/password';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -34,9 +33,10 @@ export default class User extends Model<
     unique: true,
     allowNull: false,
     validate: {
-      isEmail: {
-        msg: 'Invalid email',
-      },
+      is: {
+        args: /^[a-z]+@(student)?.lautech.edu.ng$/,
+        msg: 'Invalid school email address',
+      }
     },
   })
   declare email: string;
@@ -58,31 +58,49 @@ export default class User extends Model<
   declare password: string;
 
   @Attribute({
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(32),
     defaultValue: '',
     validate: {
-      min: {
-        args: [3],
+      len: {
+        args: [3, 32],
         msg: 'First name must be at least 3 characters',
+      },
+      isAlpha: {
+        msg: 'First name must contain only alphabets',
       },
     },
   })
   declare firstName: string;
 
   @Attribute({
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(32),
     defaultValue: '',
     validate: {
-      min: {
-        args: [3],
+      len: {
+        args: [3, 32],
         msg: 'Last name must be at least 3 characters',
+      },
+      isAlpha: {
+        msg: 'Last name must contain only alphabets',
       },
     },
   })
   declare lastName: string;
 
-  @Attribute(DataTypes.DATE)
-  declare dob: CreationOptional<Date>;
+  @Attribute({
+    type: DataTypes.STRING(20),
+    unique: {
+      name: 'uniquePhoneNumber',
+      msg: 'Phone number already in use',
+    },
+    validate: {
+      is: {
+        args: /^(\+234|0)[789]\d{9}$/,
+        msg: 'Invalid phone number provided',
+      },
+    },
+  })
+  declare phoneNumber: string;
 
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull
@@ -102,28 +120,23 @@ export default class User extends Model<
   })
   declare joinedAt: CreationOptional<Date>;
 
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
-
-  @Attribute({
-    type: DataTypes.STRING(20),
-    validate: {
-      is: {
-        args: /^(\+234|0)[789]\d{9}$/,
-        msg: 'Invalid phone number provided',
-      },
-    },
-  })
-  declare phoneNumber: string;
-
   @Attribute(DataTypes.DATE)
   @Default(DataTypes.NOW)
   declare lastLogin: CreationOptional<Date>;
 
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+
+  @Attribute(DataTypes.JSONB)
+  declare paymentMethod: JSON;
+
   @BeforeSave
-  static async hashPassword(user: User) {
-    if (user.changed('password')) {
-      user.password = await hashPassword(user.password);
+  static async hashPasswordHook(instance: User) {
+    if (instance.changed('password')) {
+      instance.password = await hashPassword(instance.password);
     }
   }
 }
+
+
+

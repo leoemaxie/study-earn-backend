@@ -17,6 +17,7 @@ import {
 import User from './user.model';
 import Course from './course.model';
 import Department from './department.model';
+import { CreationOptional } from 'sequelize';
 
 @Table({tableName: 'student'})
 export default class Student extends Model<
@@ -40,4 +41,13 @@ export default class Student extends Model<
   @Attribute(DataTypes.FLOAT)
   @Default(0.0)
   declare cgpa: number;
+
+  @Attribute(DataTypes.INTEGER)
+  declare level: CreationOptional<number>;
+
+  @Attribute(DataTypes.INTEGER)
+  declare points: CreationOptional<number>;
+
+  @Attribute(DataTypes.INTEGER)
+  declare semester: CreationOptional<number>;
 }
