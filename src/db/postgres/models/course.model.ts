@@ -28,7 +28,7 @@ export default class Course extends Model<
   declare id: string;
 
   @NotNull
-  @Attribute(DataTypes.STRING(100))
+  @Attribute(DataTypes.STRING(10))
   declare courseCode: string;
 
   @NotNull
@@ -36,11 +36,11 @@ export default class Course extends Model<
   declare courseName: string;
 
   @Attribute(DataTypes.TEXT)
-  declare description: string;
+  declare description: CreationOptional<string>;
 
   @NotNull
   @Attribute(DataTypes.INTEGER)
-  declare credits: number;
+  declare unit: number;
 
   // @BelongsToMany(() => Staff, {
   //   through: () => StaffCourse,

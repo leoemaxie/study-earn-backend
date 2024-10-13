@@ -22,7 +22,7 @@ export default async function authMiddleware(
         if (error) return next(new Unauthorized());
 
         const user = await User.findByPk(decoded.sub, {raw: true});
-        
+
         if (!user) return next(new NotFound('User not found'));
         req.user = user as User;
         next();

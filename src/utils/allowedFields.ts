@@ -4,7 +4,12 @@ export const USER_FIELDS = [
   'dob',
   'phoneNumber',
   'department',
-  'course',
 ];
 
-export const STUDENT_FIELDS = ['matricNo', 'cgpa', ...USER_FIELDS];
+export const STUDENT_FIELDS = [
+  'matricNo',
+  'cgpa',
+  'level',
+  'semester',
+  ...USER_FIELDS,
+];

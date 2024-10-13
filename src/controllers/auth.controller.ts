@@ -53,7 +53,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     if (!email || !password) throw new BadRequest('Missing email or password');
 
     const user = await User.findOne({where: {email}});
-    
+
     if (!user) throw new NotFound('User not found');
 
     if (!(await verifyPassword(password, user.password))) {

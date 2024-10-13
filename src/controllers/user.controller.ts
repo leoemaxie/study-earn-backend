@@ -1,9 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
-import {BadRequest, NotFound} from '../utils/error';
-import {Role} from '../db/postgres/models/enum/role';
-import {USER_FIELDS, STUDENT_FIELDS} from '../utils/allowedFields';
-import User from '../db/postgres/models/user.model';
-import Student from '../db/postgres/models/student.model';
+import {BadRequest, NotFound} from '@utils/error';
+import {Role} from '@models/enum/role';
+import {USER_FIELDS, STUDENT_FIELDS} from '@utils/allowedFields';
+import User from '@models/user.model';
 
 export async function getUserData(
   req: Request,
@@ -11,9 +10,9 @@ export async function getUserData(
   next: NextFunction
 ) {
   try {
-    const {password, ...user} = req.user as User;
+    const {password, paymentMethod, ...user} = req.user as User;
 
-    return res.status(200).json({data: user});
+    return res.status(200).json({user});
   } catch (error) {
     return next(error);
   }
@@ -49,7 +48,7 @@ export async function updateUserData(
   }
 }
 
-export async function deleteUserData(
+export async function deleteUser(
   req: Request,
   res: Response,
   next: NextFunction
@@ -57,12 +56,11 @@ export async function deleteUserData(
   try {
     const {id} = req.user as User;
     const user = await User.findByPk(id);
+
     if (!user) {
       throw new NotFound('User not found');
     }
-
     await user.destroy();
-
     return res.sendStatus(204);
   } catch (error) {
     return next(error);

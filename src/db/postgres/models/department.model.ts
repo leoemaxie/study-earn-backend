@@ -5,18 +5,19 @@ import {
   InferCreationAttributes,
   sql,
   CreationOptional,
+  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
-  AllowNull,
   NotNull,
   Default,
   Table,
   PrimaryKey,
   HasOne,
+  HasMany,
 } from '@sequelize/core/decorators-legacy';
 import Faculty from './faculty.model';
-import { NonAttribute } from 'sequelize';
+import Course from './course.model';
 
 @Table({tableName: 'department'})
 export default class Department extends Model<
@@ -31,9 +32,12 @@ export default class Department extends Model<
   @Attribute(DataTypes.STRING)
   @NotNull
   declare name: string;
-  
+
   @HasOne(() => Faculty, 'id')
-  declare facultyId?: NonAttribute<Faculty>;
+  declare faculty?: NonAttribute<Faculty>;
+
+  @HasMany(() => Course, 'id')
+  declare courses?: NonAttribute<Course[]>;
 
   @Attribute(DataTypes.STRING)
   @NotNull

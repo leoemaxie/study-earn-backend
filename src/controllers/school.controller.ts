@@ -1,14 +1,18 @@
 import Department from '../db/postgres/models/department.model';
-import { Request, Response, NextFunction } from 'express';
+import {Request, Response, NextFunction} from 'express';
 
-export async function getDepartments(req: Request, res: Response, next: NextFunction) {
+export async function getDepartments(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    const { limit = 10, offset = 0, faculty } = req.query;
+    const {limit = 10, offset = 0, faculty} = req.query;
     const queryOptions = {
       limit: Number(limit),
       offset: Number(offset),
       raw: true,
-      ...(faculty && { where: { facultyId: String(faculty) } }),
+      ...(faculty && {where: {facultyId: String(faculty)}}),
     };
 
     const departments = await Department.findAndCountAll(queryOptions);
@@ -29,6 +33,3 @@ export async function getDepartments(req: Request, res: Response, next: NextFunc
     return next(error);
   }
 }
-
-
-

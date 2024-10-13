@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import * as SchoolController from '../controllers/school.controller';
 
 const router = Router();

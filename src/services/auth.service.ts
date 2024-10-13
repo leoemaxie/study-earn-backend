@@ -7,17 +7,17 @@ import {sendSMS} from './sms.service';
 dotenv.config();
 
 const resetPassword = async (email: string) => {
-    const user = await User.findOne({where: {email}});
-    if (!user) throw new NotFound('User not found');
+  const user = await User.findOne({where: {email}});
+  if (!user) throw new NotFound('User not found');
 
-    const token = crypto.randomBytes(20).toString('hex');
-    const message = {
-      to: email,
-      subject: 'Password Reset',
-      body: `Your password reset token is: ${token}`,
-    };
+  const token = crypto.randomBytes(20).toString('hex');
+  const message = {
+    to: email,
+    subject: 'Password Reset',
+    body: `Your password reset token is: ${token}`,
+  };
 
-    await sendSMS(message);
+  await sendSMS(message);
 };
 
 export {resetPassword};

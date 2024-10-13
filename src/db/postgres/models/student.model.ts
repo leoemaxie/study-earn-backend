@@ -4,20 +4,17 @@ import {
   NonAttribute,
   InferAttributes,
   InferCreationAttributes,
+  CreationOptional,
 } from '@sequelize/core';
 import {
   Attribute,
   NotNull,
   Default,
   BelongsTo,
-  HasOne,
   Table,
   PrimaryKey,
 } from '@sequelize/core/decorators-legacy';
 import User from './user.model';
-import Course from './course.model';
-import Department from './department.model';
-import { CreationOptional } from 'sequelize';
 
 @Table({tableName: 'student'})
 export default class Student extends Model<
@@ -31,10 +28,7 @@ export default class Student extends Model<
   @BelongsTo(() => User, 'role')
   declare user?: NonAttribute<User>;
 
-  @HasOne(() => Department, 'id')
-  declare department?: NonAttribute<Department[]>;
-
-  @Attribute(DataTypes.INTEGER)
+  @Attribute(DataTypes.STRING(32))
   @NotNull
   declare matricNo: number;
 

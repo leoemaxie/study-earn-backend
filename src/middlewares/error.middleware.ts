@@ -1,5 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import {Error as MongooseError} from 'mongoose';
+import {MulterError} from 'multer';
 import CustomError from '../utils/error';
 
 export default function errorMiddleware(
@@ -9,14 +10,18 @@ export default function errorMiddleware(
   next: NextFunction
 ) {
   if (error instanceof CustomError) {
-    return res.status(error.status).json({error: error.message});
+    return res
+      .status(error.status)
+      .json({error: {name: error.name, message: error.message}});
   }
 
   if (
     error instanceof MongooseError.ValidatorError ||
     error instanceof MongooseError.ValidationError
   ) {
-    return res.status(400).json({error: error.message});
+    return res
+      .status(400)
+      .json({error: {name: 'ValidationError', message: error.message}});
   }
 
   if (
@@ -28,9 +33,19 @@ export default function errorMiddleware(
       .map(err => err.replace('Validation error: ', ''));
     return res
       .status(400)
-      .json({error: {msg: 'Validation Error', validations: formattedError}});
+      .json({error: {name: 'ValidationError', message: formattedError}});
   }
 
-  console.log(error);
-  return res.status(500).json({error: error.name});
+  if (error instanceof MulterError) {
+    return res
+      .status(400)
+      .json({error: {name: 'BadRequest', message: error.message}});
+  }
+
+  return res.status(500).json({
+    error: {
+      name: 'ServerError',
+      message: 'An error occurred, Please try again later',
+    },
+  });
 }

@@ -16,7 +16,7 @@ import {
   Table,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum/role';
-import { hashPassword } from '@utils/password';
+import {hashPassword} from '@utils/password';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -36,7 +36,7 @@ export default class User extends Model<
       is: {
         args: /^[a-z]+@(student)?.lautech.edu.ng$/,
         msg: 'Invalid school email address',
-      }
+      },
     },
   })
   declare email: string;
@@ -87,6 +87,9 @@ export default class User extends Model<
   })
   declare lastName: string;
 
+  @Attribute(DataTypes.STRING)
+  declare picture: CreationOptional<string>;
+
   @Attribute({
     type: DataTypes.STRING(20),
     unique: {
@@ -105,7 +108,7 @@ export default class User extends Model<
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull
   declare role: string;
-  
+
   @Attribute(DataTypes.STRING(255))
   declare department: string;
 
@@ -137,6 +140,3 @@ export default class User extends Model<
     }
   }
 }
-
-
-

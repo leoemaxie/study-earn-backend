@@ -1,8 +1,8 @@
 export default class CustomError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, name?: string) {
     super(message);
-    this.name = this.constructor.name;
+    this.name = name ? name : this.constructor.name;
     this.status = status;
   }
 }
@@ -27,7 +27,7 @@ class Conflict extends CustomError {
 
 class Unauthorized extends CustomError {
   constructor(message = 'Unauthorized') {
-    super(message, 401);
+    super(message, 401, 'AuthenticationError');
   }
 }
 
