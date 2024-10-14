@@ -12,7 +12,7 @@ export async function getUserData(
   try {
     const {password, paymentMethod, ...user} = req.user as User;
 
-    return res.status(200).json({user});
+    return res.status(200).json({data: user});
   } catch (error) {
     return next(error);
   }

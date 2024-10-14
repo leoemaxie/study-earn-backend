@@ -14,6 +14,7 @@ import {
   BeforeSave,
   BelongsTo,
   Table,
+  AllowNull,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum/role';
 import {hashPassword} from '@utils/password';
@@ -104,6 +105,13 @@ export default class User extends Model<
     },
   })
   declare phoneNumber: string;
+
+  @Attribute(DataTypes.BOOLEAN)
+  @Default(false)
+  declare isVerified: CreationOptional<boolean>;
+
+  @Attribute(DataTypes.DATE)
+  declare isBlockedUntil: CreationOptional<Date>;
 
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull

@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import User from '@models/user.model';
 import {NextFunction, Request, Response} from 'express';
 import {generateAccessToken, generateRefreshToken} from '@services/jwt.service';
-import {resetPassword as resetPasswordService} from '@services/auth.service';
 import {BadRequest, Conflict, NotFound, Unauthorized} from '@utils/error';
+import * as service from '@services/auth.service';
 import {verifyPassword} from '@utils/password';
 
 export async function register(
@@ -111,7 +111,7 @@ export async function refreshToken(
   }
 }
 
-export async function resetPassword(
+export async function sendOTP(
   req: Request,
   res: Response,
   next: NextFunction
@@ -120,8 +120,40 @@ export async function resetPassword(
     const {email} = req.body;
     if (!email) throw new BadRequest('Missing email');
 
-    await resetPasswordService(email);
-    return res.status(200).json({message: 'Password reset link sent'});
+    await service.sendOTP(email);
+    return res.status(200).json({message: 'OTP sent successfully. Check your email'});
+  } catch (error: unknown) {
+    return next(error);
+  }
+}
+
+export async function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {token, password, email} = req.body;
+    if (!token || !password || !email) throw new BadRequest('Missing token or password');
+
+    await service.resetPassword(token as string, email, password);
+    return res.status(200).json({message: 'Password reset successful'});
+  } catch (error: unknown) {
+    return next(error);
+  }
+}
+
+export async function verifyEmail(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {token, email} = req.body;
+    if (!token || !email) throw new BadRequest('Missing token or email');
+
+    await service.verifyEmail(email, token as string);
+    return res.status(200).json({message: 'Email verified successfully'});
   } catch (error: unknown) {
     return next(error);
   }

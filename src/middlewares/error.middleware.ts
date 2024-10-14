@@ -42,6 +42,8 @@ export default function errorMiddleware(
       .json({error: {name: 'BadRequest', message: error.message}});
   }
 
+  console.error(error);
+
   return res.status(500).json({
     error: {
       name: 'ServerError',

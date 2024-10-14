@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
-import {NotFound, Unauthorized} from '../utils/error';
+import {Forbidden, NotFound, Unauthorized} from '@utils/error';
 import jwt from 'jsonwebtoken';
-import User from '../db/postgres/models/user.model';
+import User from '@models/user.model';
 
 export default async function authMiddleware(
   req: Request,
@@ -24,6 +24,9 @@ export default async function authMiddleware(
         const user = await User.findByPk(decoded.sub, {raw: true});
 
         if (!user) return next(new NotFound('User not found'));
+        if (user.isBlockedUntil && user.isBlockedUntil > new Date()) {
+          return next(new Forbidden('User is blocked'));
+        }
         req.user = user as User;
         next();
       }
