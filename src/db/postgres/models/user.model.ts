@@ -18,7 +18,7 @@ import {
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
-import Payment from './payment';
+import Payment from './payment.model';
 import PaymentMethod from './paymentMethod.model';
 
 @Table({tableName: 'users'})

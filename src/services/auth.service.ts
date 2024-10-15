@@ -2,7 +2,7 @@ import 'dotenv/config';
 import User from '@models/user.model';
 import {NotFound} from '@utils/error';
 import {totp} from 'otplib';
-import { sendEmail } from './email.service';
+import {sendEmail} from './email.service';
 
 const OTP_SECRETS = process.env.OTP_SECRETS;
 
@@ -48,6 +48,6 @@ const verifyEmail = async (email: string, token: string) => {
   if (!user) throw new NotFound('User not found');
 
   await user.update({isVerified: true});
-}
+};
 
 export {resetPassword, sendOTP, verifyEmail};

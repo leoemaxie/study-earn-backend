@@ -111,17 +111,15 @@ export async function refreshToken(
   }
 }
 
-export async function sendOTP(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function sendOTP(req: Request, res: Response, next: NextFunction) {
   try {
     const {email} = req.body;
     if (!email) throw new BadRequest('Missing email');
 
     await service.sendOTP(email);
-    return res.status(200).json({message: 'OTP sent successfully. Check your email'});
+    return res
+      .status(200)
+      .json({message: 'OTP sent successfully. Check your email'});
   } catch (error: unknown) {
     return next(error);
   }
@@ -134,7 +132,8 @@ export async function resetPassword(
 ) {
   try {
     const {token, password, email} = req.body;
-    if (!token || !password || !email) throw new BadRequest('Missing token or password');
+    if (!token || !password || !email)
+      throw new BadRequest('Missing token or password');
 
     await service.resetPassword(token as string, email, password);
     return res.status(200).json({message: 'Password reset successful'});

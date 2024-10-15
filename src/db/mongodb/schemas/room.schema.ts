@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import {Schema, model} from 'mongoose';
 
 export interface IRoom {
   name: string;
@@ -6,7 +6,6 @@ export interface IRoom {
   users: [Schema.Types.ObjectId];
   createdAt: Date;
   picture?: string;
-
 }
 
 const roomSchema = new Schema<IRoom>({
@@ -17,6 +16,6 @@ const roomSchema = new Schema<IRoom>({
   picture: String,
 });
 
-roomSchema.index({ name: 1 }, { unique: true });
+roomSchema.index({name: 1}, {unique: true});
 
 export default model<IRoom>('Room', roomSchema);

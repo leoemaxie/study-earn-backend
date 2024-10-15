@@ -24,7 +24,7 @@ const corsOptions = {
   credentials: true,
 };
 const VERSION = process.env.VERSION || 'v1';
-const BASE_URL = `/api/${VERSION}`; 
+const BASE_URL = `/api/${VERSION}`;
 
 (async () => {
   (await initializeDatabase)

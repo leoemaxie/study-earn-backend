@@ -13,6 +13,6 @@ const chatSchema = new Schema<IChat>({
   room: String,
 });
 
-chatSchema.index({ room: 1 });
+chatSchema.index({room: 1});
 
 export default model<IChat>('Chat', chatSchema);

@@ -5,6 +5,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
@@ -16,7 +17,6 @@ import {
 } from '@sequelize/core/decorators-legacy';
 import {PaymentStatus} from './enum';
 import User from './user.model';
-import { NonAttribute } from 'sequelize';
 
 @Table({tableName: 'payment'})
 export default class Payment extends Model<
@@ -32,15 +32,15 @@ export default class Payment extends Model<
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
-        min: {
-            args: [1000],
-            msg: 'Amount must be greater than 0',
-        },
-        max: {
-            args: [1000000],
-            msg: 'Amount must be less than 1000000',
-        },
-    }
+      min: {
+        args: [1000],
+        msg: 'Amount must be greater than 0',
+      },
+      max: {
+        args: [1000000],
+        msg: 'Amount must be less than 1000000',
+      },
+    },
   })
   declare amount: number;
 
@@ -48,9 +48,9 @@ export default class Payment extends Model<
   @Attribute(DataTypes.ENUM(...Object.values(PaymentStatus)))
   declare status: string;
 
-@BelongsTo(() => User, 'id')
-declare user: NonAttribute<User>;
+  @BelongsTo(() => User, 'id')
+  declare user: NonAttribute<User>;
 
-declare createdAt: CreationOptional<Date>;
-declare updatedAt: CreationOptional<Date>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }

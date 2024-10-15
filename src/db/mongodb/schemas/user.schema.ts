@@ -12,7 +12,7 @@ interface IUser {
   name: string;
   email: string;
   role: string;
-  status: Status;
+  status?: Status;
   lastActive?: Date;
 }
 
@@ -22,10 +22,13 @@ const userSchema = new Schema<IUser>({
   name: String,
   email: String,
   role: String,
-  status: Status,
+  status: {
+    type: String,
+    enum: Object.values(Status),
+  },
   lastActive: Date,
 });
 
-userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({email: 1}, {unique: true});
 
 export default model<IUser>('User', userSchema);
