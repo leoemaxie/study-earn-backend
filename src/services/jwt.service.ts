@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import User from '../db/postgres/models/user.model';
+import User from '@models/user.model';
 
 dotenv.config();
 

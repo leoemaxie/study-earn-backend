@@ -11,7 +11,7 @@ import authMiddleware from '@middlewares/auth.middleware';
 import initializeDatabase from '@db/postgres';
 import errorMiddleware from '@middlewares/error.middleware';
 import {Server} from 'socket.io';
-import {connectIO} from './chat';
+import {connectIO} from './chat/socket';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,6 +24,7 @@ const corsOptions = {
   credentials: true,
 };
 const VERSION = process.env.VERSION || 'v1';
+const BASE_URL = `/api/${VERSION}`; 
 
 (async () => {
   (await initializeDatabase)
@@ -37,11 +38,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptions));
 app.use('/auth', authRoute);
-app.use(`/api/${VERSION}/user`, authMiddleware, userRoute);
-app.use(`/api/${VERSION}/chat`, authMiddleware, () => {
-  connectIO(io);
-});
-app.use(`/api/${VERSION}/school`, schoolRoute);
+app.use(`${BASE_URL}/user`, authMiddleware, userRoute);
+app.use(`${BASE_URL}/school`, schoolRoute);
+connectIO(io);
 app.use(errorMiddleware);
 
 app.get('/health', (req, res) => {

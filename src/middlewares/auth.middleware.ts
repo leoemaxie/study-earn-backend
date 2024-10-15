@@ -13,13 +13,14 @@ export default async function authMiddleware(
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) throw new Unauthorized();
+    if (!authHeader.startsWith('Bearer')) throw new Unauthorized();
 
     jwt.verify(
       token,
       process.env.ACCESS_TOKEN_PUBLIC_KEY || '',
       {algorithms: ['RS256']},
       async (error: unknown, decoded: any) => {
-        if (error) return next(new Unauthorized());
+        if (error) return next(new Unauthorized('Invalid token'));
 
         const user = await User.findByPk(decoded.sub, {raw: true});
 

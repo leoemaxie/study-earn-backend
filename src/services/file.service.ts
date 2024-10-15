@@ -1,5 +1,5 @@
 import supabase from '../supabase/supabase';
-import {BadRequest} from '../utils/error';
+import {BadRequest} from '@utils/error';
 
 const upload = async (
   file: Express.Multer.File,

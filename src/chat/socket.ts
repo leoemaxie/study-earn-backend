@@ -1,8 +1,14 @@
 import 'dotenv/config';
 import {Server} from 'socket.io';
 import {connect} from 'mongoose';
+import socketAuthentication from '@middlewares/socket.auth.middleware';
+import Chat from '@schemas/chat.schema';
+import Message from '@schemas/message.schema';
+import User from '@schemas/user.schema';
+import Room from '@schemas/room.schema';
 
 const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';
+const path = `api/${process.env.VERSION || 'v1'}/chat`;
 
 (async () => {
   try {
@@ -14,14 +20,17 @@ const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';
 })();
 
 export async function connectIO(io: Server) {
-  io.on('connection', socket => {
-    console.log('A user connected');
+  const chat = io.of(path);
+  chat.use(socketAuthentication);
+
+  chat.on('connection', socket => {
+    const user = socket.request.user;
     socket.on('joinRoom', room => {
       console.log(`${socket.id} just joined room ${room}`);
 
       socket.join(room);
 
-      io.to(room).emit('roomJoined', `${socket.id} just joined the room`);
+      chat.to(room).emit('roomJoined', `${socket.id} just joined the room`);
     });
 
     socket.on('leaveRoom', room => {
@@ -29,7 +38,7 @@ export async function connectIO(io: Server) {
 
       socket.leave(room);
 
-      io.to(room).emit('roomLeft', `${socket.id} has left the room`);
+      chat.to(room).emit('roomLeft', `${socket.id} has left the room`);
     });
 
     socket.on('messageToRoom', data => {
@@ -37,7 +46,7 @@ export async function connectIO(io: Server) {
         `${socket.id} posted a message to room ${data.room}: ${data.message}`
       );
 
-      io.to(data.room).emit('message', {
+      chat.to(data.room).emit('message', {
         id: socket.id,
         message: data.message,
       });
@@ -48,7 +57,7 @@ export async function connectIO(io: Server) {
         `${socket.id} sent a message to all clients: ${data.message}`
       );
 
-      io.emit('message', {
+      chat.emit('message', {
         id: socket.id,
         message: data.message,
       });
@@ -60,10 +69,6 @@ export async function connectIO(io: Server) {
 
     socket.on('typing', () => {
       console.log(`${socket.id} is typing...`);
-    });
-
-    socket.on('chatHistory', () => {
-      console.log(`${socket.id} requested chat history`);
     });
 
     socket.on('disconnect', () => {

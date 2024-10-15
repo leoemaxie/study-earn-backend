@@ -4,6 +4,7 @@ import {
   sql,
   InferAttributes,
   InferCreationAttributes,
+  NonAttribute,
   CreationOptional,
 } from '@sequelize/core';
 import {
@@ -12,12 +13,13 @@ import {
   Default,
   PrimaryKey,
   BeforeSave,
-  BelongsTo,
+  HasMany,
   Table,
-  AllowNull,
 } from '@sequelize/core/decorators-legacy';
-import {Role} from './enum/role';
+import {Role} from './enum';
 import {hashPassword} from '@utils/password';
+import Payment from './payment';
+import PaymentMethod from './paymentMethod.model';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -60,7 +62,7 @@ export default class User extends Model<
 
   @Attribute({
     type: DataTypes.STRING(32),
-    defaultValue: '',
+    allowNull: false,
     validate: {
       len: {
         args: [3, 32],
@@ -75,7 +77,7 @@ export default class User extends Model<
 
   @Attribute({
     type: DataTypes.STRING(32),
-    defaultValue: '',
+    allowNull: false,
     validate: {
       len: {
         args: [3, 32],
@@ -93,6 +95,7 @@ export default class User extends Model<
 
   @Attribute({
     type: DataTypes.STRING(20),
+    allowNull: false,
     unique: {
       name: 'uniquePhoneNumber',
       msg: 'Phone number already in use',
@@ -120,6 +123,12 @@ export default class User extends Model<
   @Attribute(DataTypes.STRING(255))
   declare department: string;
 
+  @HasMany(() => Payment, 'id')
+  declare payments: NonAttribute<Payment[]>;
+
+  @HasMany(() => PaymentMethod, 'id')
+  declare paymentMethods: NonAttribute<PaymentMethod[]>;
+
   @Attribute({
     type: DataTypes.DATE,
     validate: {
@@ -135,11 +144,11 @@ export default class User extends Model<
   @Default(DataTypes.NOW)
   declare lastLogin: CreationOptional<Date>;
 
+  @Attribute(DataTypes.STRING)
+  declare gpsLocation: CreationOptional<string>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-
-  @Attribute(DataTypes.JSONB)
-  declare paymentMethod: JSON;
 
   @BeforeSave
   static async hashPasswordHook(instance: User) {

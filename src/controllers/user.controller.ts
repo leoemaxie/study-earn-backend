@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import {BadRequest, NotFound} from '@utils/error';
-import {Role} from '@models/enum/role';
+import {Role} from '@models/enum';
 import {USER_FIELDS, STUDENT_FIELDS} from '@utils/allowedFields';
 import User from '@models/user.model';
 
@@ -10,7 +10,7 @@ export async function getUserData(
   next: NextFunction
 ) {
   try {
-    const {password, paymentMethod, ...user} = req.user as User;
+    const {password, ...user} = req.user as User;
 
     return res.status(200).json({data: user});
   } catch (error) {

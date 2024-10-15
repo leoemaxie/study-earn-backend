@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import {Error as MongooseError} from 'mongoose';
 import {MulterError} from 'multer';
-import CustomError from '../utils/error';
+import CustomError from '@utils/error';
 
 export default function errorMiddleware(
   error: Error,
