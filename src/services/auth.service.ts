@@ -23,10 +23,7 @@ const sendOTP = async (email: string) => {
   const message = {
     to: email,
     subject: 'One Time Password (OTP)',
-    body: `Your One Time Password (OTP) is: ${generateOTP(email)}
-    Please use this OTP to verify your email address on the Study Earn Platform.
-    Expires in 30 seconds. Do not share this OTP with anyone.
-    `,
+    body: `Your One Time Password (OTP) is: ${generateOTP(email)}\nPlease use this OTP to verify your email address on the Study Earn Platform.\nExpires in 30 seconds. Do not share this OTP with anyone.`,
   };
 
   await sendEmail(message);

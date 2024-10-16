@@ -24,6 +24,17 @@ export default class Staff extends Model<
   @NotNull
   declare id: string;
 
-  @BelongsTo(() => User, 'role')
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare userId: string;
+
+ 
+  @BelongsTo(() => User, {
+    foreignKey: 'userId',
+    inverse: {
+      type: 'hasOne',
+      as: 'staff',
+    },
+  })
   declare user?: NonAttribute<User>;
 }

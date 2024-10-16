@@ -5,6 +5,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  sql,
 } from '@sequelize/core';
 import {
   Attribute,
@@ -22,24 +23,35 @@ export default class Student extends Model<
   InferCreationAttributes<Student>
 > {
   @Attribute(DataTypes.UUID)
+  @Default(sql.uuidV4)
   @PrimaryKey
   declare id: string;
 
-  @BelongsTo(() => User, 'role')
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare userId: string;
+
+  @BelongsTo(() => User, {
+    foreignKey: 'userId',
+    inverse: {
+      type: 'hasOne',
+      as: 'student',
+    },
+  })
   declare user?: NonAttribute<User>;
 
   @Attribute(DataTypes.STRING(32))
-  @NotNull
-  declare matricNo: number;
+  declare matricNo: CreationOptional<string>;
 
   @Attribute(DataTypes.FLOAT)
   @Default(0.0)
-  declare cgpa: number;
+  declare cgpa: CreationOptional<number>;
 
   @Attribute(DataTypes.INTEGER)
   declare level: CreationOptional<number>;
 
   @Attribute(DataTypes.INTEGER)
+  @Default(0)
   declare points: CreationOptional<number>;
 
   @Attribute(DataTypes.INTEGER)

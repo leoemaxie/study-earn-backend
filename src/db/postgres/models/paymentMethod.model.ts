@@ -4,19 +4,17 @@ import {
   sql,
   InferAttributes,
   InferCreationAttributes,
-  NonAttribute,
   CreationOptional,
 } from '@sequelize/core';
 import {
   Attribute,
   Default,
   PrimaryKey,
-  BelongsTo,
+  NotNull,
   Table,
 } from '@sequelize/core/decorators-legacy';
-import User from './user.model';
 
-@Table({tableName: 'paayment_method'})
+@Table({tableName: 'payment_method'})
 export default class PaymentMethod extends Model<
   InferAttributes<PaymentMethod>,
   InferCreationAttributes<PaymentMethod>
@@ -68,10 +66,11 @@ export default class PaymentMethod extends Model<
       },
     },
   })
-  declare backName: string;
+  declare bankName: string;
 
-  @BelongsTo(() => User, 'id')
-  declare user: NonAttribute<User>;
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare userId: string;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

@@ -24,6 +24,17 @@ export default class Admin extends Model<
   @NotNull
   declare adminId: CreationOptional<string>;
 
-  @BelongsTo(() => Staff, 'id')
-  declare staff?: NonAttribute<Staff>;
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare staffId: string;
+
+  
+  @BelongsTo(() => Staff, {
+    foreignKey: 'userId',
+    inverse: {
+      type: 'hasOne',
+      as: 'admin',
+    },
+  })
+  declare user?: NonAttribute<Staff>;
 }

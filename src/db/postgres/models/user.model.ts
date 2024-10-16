@@ -123,10 +123,10 @@ export default class User extends Model<
   @Attribute(DataTypes.STRING(255))
   declare department: string;
 
-  @HasMany(() => Payment, 'id')
+  @HasMany(() => Payment, 'userId')
   declare payments: NonAttribute<Payment[]>;
 
-  @HasMany(() => PaymentMethod, 'id')
+  @HasMany(() => PaymentMethod, 'userId')
   declare paymentMethods: NonAttribute<PaymentMethod[]>;
 
   @Attribute({

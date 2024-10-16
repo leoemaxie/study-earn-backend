@@ -9,7 +9,7 @@ async function sendEmail(content: Message): Promise<void> {
   const {to, subject, body} = content;
 
   const sentFrom = new Sender(
-    process.env.EMAIL_ADDRESS!,
+   'MS_UeKmhe@trial-3vz9dlep9164kj50.mlsender.net',
     process.env.EMAIL_SENDER!
   );
 

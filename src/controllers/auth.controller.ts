@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 import User from '@models/user.model';
+import Role from '@models/enum/role.model';
 import {NextFunction, Request, Response} from 'express';
 import {generateAccessToken, generateRefreshToken} from '@services/jwt.service';
 import {BadRequest, Conflict, NotFound, Unauthorized} from '@utils/error';
-import * as service from '@services/auth.service';
 import {verifyPassword} from '@utils/password';
+import * as service from '@services/auth.service';
 
 export async function register(
   req: Request,
@@ -37,7 +38,10 @@ export async function register(
       throw new Conflict('User already exists');
     }
 
-    await User.create({...req.body});
+    await User.sequelize.transaction(async (transaction) => {
+      const user = await User.create({...req.body}, {transaction});
+      await Role[user.role].create({userId: user.id}, {transaction});
+    });
     return res.status(201).json({message: 'User created successfully'});
   } catch (error: unknown) {
     return next(error);

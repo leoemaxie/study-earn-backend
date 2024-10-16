@@ -1,18 +1,15 @@
 import {NextFunction, Request, Response} from 'express';
-import {BadRequest, NotFound} from '@utils/error';
+import {BadRequest} from '@utils/error';
 import {Role} from '@models/enum';
-import {USER_FIELDS, STUDENT_FIELDS} from '@utils/allowedFields';
+import {formatUser, transformCustomFields} from '@utils/format';
+import RoleModel from '@models/enum/role.model';
+import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
+import {format} from 'path';
 
-export async function getUserData(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
-    const {password, ...user} = req.user as User;
-
-    return res.status(200).json({data: user});
+    return res.status(200).json({data: formatUser(req.user as User)});
   } catch (error) {
     return next(error);
   }
@@ -24,25 +21,43 @@ export async function updateUserData(
   next: NextFunction
 ) {
   try {
-    const {id, role} = req.user as User;
+    const {password, ...user} = req.user as User;
+    const {id, role} = user;
+    const fields = ALLOWED_FIELDS[role];
+    const customFields = CUSTOM_FIELDS[role];
 
     Object.keys(req.body).forEach(key => {
-      if (role === Role.STUDENT && !STUDENT_FIELDS.includes(key)) {
-        throw new BadRequest('Invalid field');
-      }
-      if (!USER_FIELDS.includes(key)) {
+      if (!fields.includes(key)) {
         throw new BadRequest('Invalid field');
       }
     });
 
-    const user = await User.findByPk(id);
-    if (!user) {
-      throw new NotFound('User not found');
-    }
+    const userData = {};
+    const roleData = {};
 
-    await user.update(req.body);
+    Object.keys(req.body).forEach(key => {
+      if (customFields.includes(key)) {
+        roleData[key] = req.body[key];
+      } else {
+        userData[key] = req.body[key];
+      }
+    });
 
-    return res.status(200).json({message: 'User updated successfully'});
+    User.sequelize?.transaction(async transaction => {
+      await User.update(userData, {where: {id}, transaction});
+      await RoleModel[role].update(roleData, {
+        where: {userId: id},
+        transaction,
+      });
+    });
+
+    const updated = await User.findOne({
+      where: {id},
+      include: [{model: RoleModel[role], as: role}],
+      raw: true,
+    });
+
+    return res.status(200).json({data: formatUser(updated as User)});
   } catch (error) {
     return next(error);
   }
@@ -54,13 +69,7 @@ export async function deleteUser(
   next: NextFunction
 ) {
   try {
-    const {id} = req.user as User;
-    const user = await User.findByPk(id);
-
-    if (!user) {
-      throw new NotFound('User not found');
-    }
-    await user.destroy();
+    await req.user.destroy();
     return res.sendStatus(204);
   } catch (error) {
     return next(error);

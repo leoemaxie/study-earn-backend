@@ -5,18 +5,15 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
   NotNull,
   Default,
   PrimaryKey,
-  BelongsTo,
   Table,
 } from '@sequelize/core/decorators-legacy';
 import {PaymentStatus} from './enum';
-import User from './user.model';
 
 @Table({tableName: 'payment'})
 export default class Payment extends Model<
@@ -44,12 +41,16 @@ export default class Payment extends Model<
   })
   declare amount: number;
 
-  @NotNull
   @Attribute(DataTypes.ENUM(...Object.values(PaymentStatus)))
+  @NotNull
   declare status: string;
 
-  @BelongsTo(() => User, 'id')
-  declare user: NonAttribute<User>;
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare userId: string;
+
+  @Attribute(DataTypes.UUID)
+  declare receiver?: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
