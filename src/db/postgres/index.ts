@@ -13,7 +13,7 @@ import Payment from '@models/payment.model';
 import PaymentMethod from '@models/paymentMethod.model';
 
 export async function initializeDatabase() {
-  return new Sequelize({
+  const sequelize = new Sequelize({
     dialect: PostgresDialect,
     url: process.env.DB_URL,
     //ssl: true,
@@ -34,7 +34,32 @@ export async function initializeDatabase() {
       freezeTableName: true,
       underscored: true,
     },
+    hooks: {
+      beforeSave: trimModelStrings,
+      beforeUpdate: trimModelStrings,
+      beforeValidate: trimModelStrings,
+    },
   });
+
+  return sequelize;
+}
+
+interface Model {
+  dataValues: Record<string, any>;
+  changed: (key: string) => boolean;
+}
+
+function trimModelStrings(model: Model): void {
+  Object.keys(model.dataValues).forEach(key => {
+    if (
+      model.dataValues[key] &&
+      typeof model.dataValues[key] === 'string' &&
+      model.changed(key)
+    ) {
+      model.dataValues[key] = model.dataValues[key].trim();
+    }
+  });
+  console.log(model);
 }
 
 export default initializeDatabase();

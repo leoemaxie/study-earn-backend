@@ -27,19 +27,44 @@ export default class Course extends Model<
   @Attribute(DataTypes.UUID)
   declare id: string;
 
-  @NotNull
-  @Attribute(DataTypes.STRING(10))
-  declare courseCode: string;
+  @Attribute({
+    type: DataTypes.STRING(255),
+    allowNull: false,
+    validate: {
+      len: {
+        args: [3, 255],
+        msg: 'Name must be at least 3 characters',
+      },
+      isAlpha: {
+        msg: 'Name must only contain alphabets',
+      },
+    },
+  })
+  declare name: string;
 
-  @NotNull
-  @Attribute(DataTypes.STRING(255))
-  declare courseName: string;
+  @Attribute({
+    type: DataTypes.STRING(10),
+    allowNull: false,
+    validate: {
+      len: {
+        args: [3, 10],
+        msg: 'Code must be at least 3 characters',
+      },
+      isAlphanumeric: {
+        msg: 'Code must only contain alphabets and numbers',
+      },
+    },
+    set(value: string) {
+      this.setDataValue('code', value.toUpperCase());
+    },
+  })
+  declare code: string;
 
   @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;
 
-  @NotNull
   @Attribute(DataTypes.INTEGER)
+  @NotNull
   declare unit: number;
 
   // @BelongsToMany(() => Staff, {

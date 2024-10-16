@@ -57,8 +57,8 @@ export default class PaymentMethod extends Model<
     allowNull: false,
     validate: {
       len: {
-        args: [5, 255],
-        msg: 'Bank name must be at least 5 characters',
+        args: [3, 255],
+        msg: 'Bank name must be at least 3 characters',
       },
       is: {
         args: /^[a-zA-Z\s]+$/,

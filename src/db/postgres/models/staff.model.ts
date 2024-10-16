@@ -28,7 +28,6 @@ export default class Staff extends Model<
   @NotNull
   declare userId: string;
 
- 
   @BelongsTo(() => User, {
     foreignKey: 'userId',
     inverse: {

@@ -15,6 +15,7 @@ import {
   PrimaryKey,
   HasOne,
   HasMany,
+  BelongsTo,
 } from '@sequelize/core/decorators-legacy';
 import Faculty from './faculty.model';
 import Course from './course.model';
@@ -29,22 +30,57 @@ export default class Department extends Model<
   @Attribute(DataTypes.UUID)
   declare id: CreationOptional<string>;
 
-  @Attribute(DataTypes.STRING)
-  @NotNull
+  @Attribute({
+    type: DataTypes.STRING(255),
+    allowNull: false,
+    validate: {
+      len: {
+        args: [3, 255],
+        msg: 'Name must be at least 3 characters',
+      },
+      isAlpha: {
+        msg: 'Name must only contain alphabets',
+      },
+    },
+    set(value: string) {
+      this.setDataValue(
+        'name',
+        value.replace(/\b\w/g, char => char.toUpperCase())
+      );
+    },
+  })
   declare name: string;
 
-  @HasOne(() => Faculty, 'id')
-  declare faculty?: NonAttribute<Faculty>;
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare facultyId: string;
 
   @HasMany(() => Course, 'id')
   declare courses?: NonAttribute<Course[]>;
 
-  @Attribute(DataTypes.STRING)
-  @NotNull
+  @Attribute({
+    type: DataTypes.STRING(10),
+    allowNull: false,
+    validate: {
+      len: {
+        args: [3, 10],
+        msg: 'Code must be at least 3 characters',
+      },
+      isAlpha: {
+        msg: 'Code must only contain alphabets',
+      },
+    },
+    set(value: string) {
+      this.setDataValue('code', value.toUpperCase());
+    },
+  })
   declare code: string;
 
-  @Attribute(DataTypes.STRING)
+  @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;
+
+  @BelongsTo(() => Faculty, 'facultyId')
+  declare faculty?: NonAttribute<Faculty>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

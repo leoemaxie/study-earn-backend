@@ -43,17 +43,37 @@ export default class Student extends Model<
   @Attribute(DataTypes.STRING(32))
   declare matricNo: CreationOptional<string>;
 
-  @Attribute(DataTypes.FLOAT)
-  @Default(0.0)
+  @Attribute({
+    type: DataTypes.FLOAT,
+    defaultValue: 0.0,
+    validate: {
+      min: {
+        args: [0.0],
+        msg: 'CGPA must be greater than or equal to 0.0',
+      },
+      max: {
+        args: [5.0],
+        msg: 'CGPA must be less than or equal to 5.0',
+      },
+    },
+  })
   declare cgpa: CreationOptional<number>;
 
-  @Attribute(DataTypes.INTEGER)
-  declare level: CreationOptional<number>;
+  @Attribute(DataTypes.ENUM('100', '200', '300', '400', '500'))
+  declare level: CreationOptional<string>;
 
   @Attribute(DataTypes.INTEGER)
   @Default(0)
   declare points: CreationOptional<number>;
 
-  @Attribute(DataTypes.INTEGER)
+  @Attribute({
+    type: DataTypes.INTEGER,
+    validate: {
+      isIn: {
+        args: [[1, 2]],
+        msg: 'Semester must be either 1 or 2',
+      },
+    },
+  })
   declare semester: CreationOptional<number>;
 }

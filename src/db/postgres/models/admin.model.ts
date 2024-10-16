@@ -28,7 +28,6 @@ export default class Admin extends Model<
   @NotNull
   declare staffId: string;
 
-  
   @BelongsTo(() => Staff, {
     foreignKey: 'userId',
     inverse: {

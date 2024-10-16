@@ -38,7 +38,7 @@ export async function register(
       throw new Conflict('User already exists');
     }
 
-    await User.sequelize.transaction(async (transaction) => {
+    await User.sequelize.transaction(async transaction => {
       const user = await User.create({...req.body}, {transaction});
       await Role[user.role].create({userId: user.id}, {transaction});
     });

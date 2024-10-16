@@ -26,11 +26,13 @@ export default async function authMiddleware(
 
         const user = await User.findOne({
           where: {id: sub},
-          include: [{
-            model: Role[role],
-            as: role,
-            attributes: { exclude: ['id', 'userId', 'createdAt'] }
-          }],
+          include: [
+            {
+              model: Role[role],
+              as: role,
+              attributes: {exclude: ['id', 'userId', 'createdAt']},
+            },
+          ],
           raw: true,
         });
 

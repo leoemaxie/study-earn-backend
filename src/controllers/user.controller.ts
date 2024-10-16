@@ -1,11 +1,10 @@
 import {NextFunction, Request, Response} from 'express';
 import {BadRequest} from '@utils/error';
 import {Role} from '@models/enum';
-import {formatUser, transformCustomFields} from '@utils/format';
+import {formatUser} from '@utils/format';
 import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
-import {format} from 'path';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -69,7 +68,7 @@ export async function deleteUser(
   next: NextFunction
 ) {
   try {
-    await req.user.destroy();
+    await User.destroy({where: {id: req.user?.id}});
     return res.sendStatus(204);
   } catch (error) {
     return next(error);

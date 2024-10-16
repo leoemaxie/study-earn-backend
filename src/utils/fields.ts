@@ -6,12 +6,7 @@ const USER_FIELDS = [
   'department',
 ];
 
-export const STUDENT_FIELDS = [
-  'matricNo',
-  'cgpa',
-  'level',
-  'semester',
-];
+export const STUDENT_FIELDS = ['matricNo', 'cgpa', 'level', 'semester'];
 
 const ALLOWED_FIELDS = {
   staff: USER_FIELDS,
@@ -19,8 +14,7 @@ const ALLOWED_FIELDS = {
   student: [...STUDENT_FIELDS, ...USER_FIELDS],
 };
 
-export const CUSTOM_FIELDS = 
-{
+export const CUSTOM_FIELDS = {
   staff: USER_FIELDS,
   admin: USER_FIELDS,
   student: STUDENT_FIELDS,

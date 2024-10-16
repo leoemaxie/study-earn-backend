@@ -18,6 +18,7 @@ import {
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
+import {trimString} from '@utils/format';
 import Payment from './payment.model';
 import PaymentMethod from './paymentMethod.model';
 
@@ -72,6 +73,12 @@ export default class User extends Model<
         msg: 'First name must contain only alphabets',
       },
     },
+    set(value: string) {
+      this.setDataValue(
+        'firstName',
+        value.replace(/\b\w/g, char => char.toUpperCase())
+      );
+    },
   })
   declare firstName: string;
 
@@ -86,6 +93,12 @@ export default class User extends Model<
       isAlpha: {
         msg: 'Last name must contain only alphabets',
       },
+    },
+    set(value: string) {
+      this.setDataValue(
+        'lastName',
+        value.replace(/\b\w/g, char => char.toUpperCase())
+      );
     },
   })
   declare lastName: string;
