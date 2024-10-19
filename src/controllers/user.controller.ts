@@ -5,6 +5,7 @@ import {formatUser} from '@utils/format';
 import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
+import * as sns from '@services/notification.service';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -88,6 +89,24 @@ export async function getMates(
     });
 
     return res.status(200).json({data: mates});
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function sendNotification(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {title, body} = req.body;
+
+    await sns.sendNotification({
+      title,
+      body,
+    });
+    return res.sendStatus(204);
   } catch (error) {
     return next(error);
   }

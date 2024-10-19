@@ -5,7 +5,6 @@ import {
   InferCreationAttributes,
   CreationOptional,
   sql,
-  NonAttribute,
 } from '@sequelize/core';
 import {
   Attribute,
@@ -13,9 +12,10 @@ import {
   Default,
   NotNull,
   Table,
-  BelongsToMany,
+  BelongsTo,
 } from '@sequelize/core/decorators-legacy';
-import Staff from './staff.model';
+import Department from './department.model';
+import {NonAttribute} from 'sequelize';
 
 @Table({tableName: 'course'})
 export default class Course extends Model<
@@ -60,6 +60,13 @@ export default class Course extends Model<
   })
   declare code: string;
 
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare departmentId: string;
+
+  @BelongsTo(() => Department, 'departmentId')
+  declare department?: NonAttribute<Department>;
+
   @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;
 
@@ -67,19 +74,6 @@ export default class Course extends Model<
   @NotNull
   declare unit: number;
 
-  // @BelongsToMany(() => Staff, {
-  //   through: () => StaffCourse,
-  // })
-  // declare staff?: NonAttribute<Staff[]>;
-
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-}
-
-class StaffCourse extends Model<
-  InferAttributes<StaffCourse>,
-  InferCreationAttributes<StaffCourse>
-> {
-  declare staffId: string;
-  declare courseId: string;
 }

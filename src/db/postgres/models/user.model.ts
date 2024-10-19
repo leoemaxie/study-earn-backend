@@ -18,7 +18,6 @@ import {
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
-import {trimString} from '@utils/format';
 import Payment from './payment.model';
 import PaymentMethod from './paymentMethod.model';
 
@@ -104,7 +103,7 @@ export default class User extends Model<
   declare lastName: string;
 
   @Attribute(DataTypes.STRING)
-  declare picture: CreationOptional<string>;
+  declare picture: CreationOptional<string | null>;
 
   @Attribute({
     type: DataTypes.STRING(20),

@@ -13,12 +13,9 @@ import {
   Default,
   Table,
   PrimaryKey,
-  HasOne,
-  HasMany,
   BelongsTo,
 } from '@sequelize/core/decorators-legacy';
 import Faculty from './faculty.model';
-import Course from './course.model';
 
 @Table({tableName: 'department'})
 export default class Department extends Model<
@@ -54,9 +51,6 @@ export default class Department extends Model<
   @Attribute(DataTypes.UUID)
   @NotNull
   declare facultyId: string;
-
-  @HasMany(() => Course, 'id')
-  declare courses?: NonAttribute<Course[]>;
 
   @Attribute({
     type: DataTypes.STRING(10),

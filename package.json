@@ -2,7 +2,7 @@
   "name": "study-earn-backend",
   "version": "1.0.0",
   "description": "Backend service for the Study Earn project",
-  "main": "build/src/index.js",
+  "main": "build/index.js",
   "types": "build/src/index.d.ts",
   "files": [
     "build/src"
@@ -50,6 +50,7 @@
     "@sequelize/core": "^7.0.0-alpha.41",
     "@sequelize/postgres": "^7.0.0-alpha.41",
     "@supabase/supabase-js": "^2.39.8",
+    "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.0",

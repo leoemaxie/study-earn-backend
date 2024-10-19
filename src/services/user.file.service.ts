@@ -1,6 +1,14 @@
-import supabase from '../supabase/supabase';
+import 'dotenv/config';
+import {v2 as cloudinary} from 'cloudinary';
 import User from '@models/user.model';
 import {BadRequest} from '@utils/error';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 const upload = async (
   file: Express.Multer.File | undefined,
@@ -15,62 +23,58 @@ const upload = async (
   }
 
   const path = `${user.id}.${file.mimetype.split('/')[1]}`;
-  const {data, error} = await supabase.storage
-    .from(type)
-    .upload(path, file.buffer, {
-      upsert: true,
+  const uploadStream = () => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: type,
+          public_id: user.id,
+          unique_filename: false,
+          overwrite: true,
+        },
+        (error, result) => {
+          if (result) {
+            resolve(result);
+          } else {
+            reject(error);
+          }
+        }
+      );
+      stream.end(file.buffer);
     });
+  };
 
-  if (error) throw error;
+  await uploadStream();
 
-  const publicUrl = supabase.storage.from(type).getPublicUrl(path)
-    .data.publicUrl;
+  const optimizeUrl = cloudinary.url(user.id, {
+    fetch_format: 'auto',
+    quality: 'auto',
+    crop: 'auto',
+    gravity: 'auto',
+    width: 500,
+    height: 500,
+  });
+
   if (type === 'picture') {
-    await User.update({picture: publicUrl}, {where: {id: user.id}});
+    await User.update({picture: optimizeUrl}, {where: {id: user.id}});
   }
-
-  return {data};
+  return {url: optimizeUrl};
 };
 
-const download = async (userId: string, fileName: string) => {
-  const {data, error} = await supabase.storage
-    .from('files')
-    .download(`${userId}/${fileName}`);
+const del = async (user: User, type?, fileName?: string) => {
+  if (!fileName && type !== 'picture')
+    throw new BadRequest('No file name provided');
+  if (!type) throw new BadRequest('No type provided');
 
-  if (error) {
-    throw error;
+  const {picture} = user;
+  const path = `${type}/${user.id}.${type === 'picture' ? picture?.split('.')[1] : fileName?.split('.')[1]}`;
+  await cloudinary.uploader.destroy(user.id, {
+    resource_type: type,
+  });
+
+  if (type === 'picture') {
+    await User.update({picture: null}, {where: {id: user.id}});
   }
-
-  return data;
 };
 
-const del = async (user: User, path: string) => {
-  const {data, error} = await supabase.storage.from('files').remove([path]);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
-};
-
-const update = async (
-  userId: string,
-  fileName: string,
-  file: Express.Multer.File | undefined
-) => {
-  if (!file) {
-    throw new BadRequest('No file provided');
-  }
-  const {data, error} = await supabase.storage
-    .from('files')
-    .update(`${userId}/${fileName}`, file.buffer);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
-};
-
-export {upload, download, del, update};
+export {upload, del};

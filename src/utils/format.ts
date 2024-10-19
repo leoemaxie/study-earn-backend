@@ -41,18 +41,3 @@ export function transformFields(role: string, data: Record<string, any>) {
     {} as Record<string, any>
   );
 }
-
-export function trimString<T extends Model<any, any>>(instance: T) {
-  Object.keys(instance).forEach(key => {
-    if (
-      typeof instance[key] === 'string' &&
-      instance[key] &&
-      instance.changed(
-        key as keyof InferAttributes<T> | keyof InferCreationAttributes<T>
-      )
-    ) {
-      instance[key] = instance[key].trim();
-      console.log(instance[key]);
-    }
-  });
-}

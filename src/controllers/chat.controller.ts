@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import {getChatHistory} from '@services/chat.service';
 
-export class ChatController {
+export default class ChatController {
   public async getChatHistory(req: Request, res: Response, next: NextFunction) {
     try {
       const {chatId, limit, offset} = req.query;
@@ -10,7 +10,7 @@ export class ChatController {
         Number(limit),
         Number(offset)
       );
-      res.status(200).json(chatHistory);
+      res.status(200).json({data: chatHistory});
     } catch (error) {
       next(error);
     }

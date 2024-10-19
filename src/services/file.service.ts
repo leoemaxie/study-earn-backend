@@ -1,32 +1,35 @@
 import supabase from '../supabase/supabase';
-import {BadRequest} from '@utils/error';
 
-const upload = async (
-  file: Express.Multer.File,
-  name: string,
-  type: string
+const download = async (
+  type: string,
+  name?: string,
+  options: {
+    semester?: string;
+    session?: string;
+    markdown?: boolean;
+    list?: boolean;
+  } = {}
 ) => {
-  if (!file) throw new BadRequest('No file provided');
+  const storage = supabase.storage.from(
+    `files${type}${options.markdown ? '/markdown' : '/pdf'}`
+  );
 
-  const {data, error} = await supabase.storage
-    .from(type)
-    .upload(`${name}/${file.originalname}`, file.buffer);
-
-  if (error) throw error;
-
-  return data;
-};
-
-const download = async (name: string, fileName: string, type: string) => {
-  const {data, error} = await supabase.storage
-    .from(type)
-    .download(`${name}/${fileName}`);
-
-  if (error) {
-    throw error;
+  if (options.list) {
+    const {data, error} = await storage.list(`${name}/`);
+    if (error) throw error;
+    return data;
   }
 
-  return data;
+  const file = [
+    name && options.semester ? `${name}-` : '',
+    options.session
+      ? `${options.session}${type === 'calendar' ? `-${Number(options.session) + 1}` : ''}`
+      : '',
+    options.markdown ? '.md' : '.pdf',
+  ].join('');
+
+  const {data: publicUrlData} = storage.getPublicUrl(file);
+  return publicUrlData.publicUrl;
 };
 
 const del = async (name: string, fileName: string, type: string) => {
@@ -34,11 +37,8 @@ const del = async (name: string, fileName: string, type: string) => {
     .from(type)
     .remove([`${name}/${fileName}`]);
 
-  if (error) {
-    throw error;
-  }
-
+  if (error) throw error;
   return data;
 };
 
-export {upload, download, del};
+export {download, del};

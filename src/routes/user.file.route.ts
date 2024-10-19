@@ -24,46 +24,16 @@ router.post(
   }
 );
 
-router.get(
-  '/download',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = await fileService.download(
-        req.body.userId,
-        req.body.fileName
-      );
-      res.status(200).json(data);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 router.delete(
-  '/delete',
+  '/delete/:type',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await fileService.del(req.body.userId, req.body.fileName);
-      res.status(200).json(data);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+      const type = req.params.type;
 
-router.put(
-  '/update',
-  upload.single('file'),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = await fileService.update(
-        req.body.userId,
-        req.body.fileName,
-        req.file
-      );
-      res.status(200).json(data);
+      await fileService.del(req.user, type, req.body.fileName);
+      return res.sendStatus(204);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 );

@@ -59,7 +59,6 @@ function trimModelStrings(model: Model): void {
       model.dataValues[key] = model.dataValues[key].trim();
     }
   });
-  console.log(model);
 }
 
 export default initializeDatabase();

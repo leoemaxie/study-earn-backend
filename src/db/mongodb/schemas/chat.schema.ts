@@ -8,7 +8,7 @@ export interface IChat {
 }
 
 const chatSchema = new Schema<IChat>({
-  message: Message,
+  message: Message.schema,
   sender: String,
   room: String,
 });

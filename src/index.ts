@@ -7,6 +7,9 @@ import http from 'http';
 import authRoute from '@routes/auth.route';
 import userRoute from '@routes/user.route';
 import schoolRoute from '@routes/school.route';
+import chatRoute from '@routes/chat.route';
+import fileRoute from '@routes/file.route';
+import studentRoute from '@routes/student.route';
 import authMiddleware from '@middlewares/auth.middleware';
 import initializeDatabase from '@db/postgres';
 import errorMiddleware from '@middlewares/error.middleware';
@@ -19,7 +22,7 @@ const io = new Server(httpServer);
 const PORT = process.env.PORT || 3000;
 const corsOptions = {
   origin: process.env.CORS_ORIGIN,
-  methods: 'POST',
+  methods: 'POST,GET,PUT,PATCH,DELETE',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 };
@@ -37,10 +40,13 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptions));
+connectIO(io);
 app.use('/auth', authRoute);
 app.use(`${BASE_URL}/user`, authMiddleware, userRoute);
 app.use(`${BASE_URL}/school`, schoolRoute);
-connectIO(io);
+app.use(`${BASE_URL}/chat`, authMiddleware, chatRoute);
+app.use(`${BASE_URL}/file`, authMiddleware, fileRoute);
+app.use(`${BASE_URL}/student`, authMiddleware, studentRoute);
 app.use(errorMiddleware);
 
 app.get('/health', (req, res) => {
