@@ -1,4 +1,6 @@
-import Department from '../db/postgres/models/department.model';
+import Department from '@models/department.model';
+import Faculty from '@models/faculty.model';
+import {download} from '@services/file.service';
 import {Request, Response, NextFunction} from 'express';
 
 export async function getDepartments(
@@ -7,7 +9,7 @@ export async function getDepartments(
   next: NextFunction
 ) {
   try {
-    const {limit = 10, offset = 0, faculty} = req.query;
+    const {limit = 20, offset = 0, faculty} = req.query;
     const queryOptions = {
       limit: Number(limit),
       offset: Number(offset),
@@ -40,6 +42,40 @@ export async function getDepartments(
       },
       data: departments.rows,
     });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function getFaculty(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const faculties = await Faculty.findAll({raw: true});
+    return res.status(200).json({data: faculties});
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function getCalendar(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {semester, session, markdown} = req.query;
+    const list = !semester || !session;
+    const query = {
+      semester: semester as string,
+      session: session as string,
+      markdown: markdown === 'true',
+      list,
+    };
+    const data = await download('calendar', '', query);
+    return res.status(200).json({data: {url: data}});
   } catch (error) {
     return next(error);
   }

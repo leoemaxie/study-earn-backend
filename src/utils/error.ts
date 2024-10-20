@@ -7,40 +7,44 @@ export default class CustomError extends Error {
   }
 }
 
-class ServerError extends CustomError {
+export class ServerError extends CustomError {
   constructor(message = 'Internal Server Error') {
     super(message, 500);
   }
 }
 
-class BadRequest extends CustomError {
+export class BadRequest extends CustomError {
   constructor(message = 'Bad Request') {
     super(message, 400);
   }
 }
 
-class Conflict extends CustomError {
+export class Conflict extends CustomError {
   constructor(message = 'Conflict') {
     super(message, 409);
   }
 }
 
-class Unauthorized extends CustomError {
+export class Unauthorized extends CustomError {
   constructor(message = 'Unauthorized') {
     super(message, 401, 'AuthenticationError');
   }
 }
 
-class Forbidden extends CustomError {
+export class Forbidden extends CustomError {
   constructor(message = 'Forbidden') {
     super(message, 403);
   }
 }
 
-class NotFound extends CustomError {
+export class NotFound extends CustomError {
   constructor(message = 'Not Found') {
     super(message, 404);
   }
 }
 
-export {ServerError, BadRequest, Unauthorized, Forbidden, NotFound, Conflict};
+export class UnprocessableEntity extends CustomError {
+  constructor(message = 'Unprocessable Entity') {
+    super(message, 422);
+  }
+}

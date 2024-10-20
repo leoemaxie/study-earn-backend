@@ -46,13 +46,13 @@ const upload = async (
 
   await uploadStream();
 
-  const optimizeUrl = cloudinary.url(user.id, {
+  const optimizeUrl = cloudinary.url(`${type}/${user.id}`, {
     fetch_format: 'auto',
     quality: 'auto',
     crop: 'auto',
     gravity: 'auto',
-    width: 500,
-    height: 500,
+    width: 200,
+    height: 200,
   });
 
   if (type === 'picture') {
@@ -61,14 +61,12 @@ const upload = async (
   return {url: optimizeUrl};
 };
 
-const del = async (user: User, type?, fileName?: string) => {
+const del = async (user: User, type?: string, fileName?: string) => {
   if (!fileName && type !== 'picture')
     throw new BadRequest('No file name provided');
   if (!type) throw new BadRequest('No type provided');
 
-  const {picture} = user;
-  const path = `${type}/${user.id}.${type === 'picture' ? picture?.split('.')[1] : fileName?.split('.')[1]}`;
-  await cloudinary.uploader.destroy(user.id, {
+  await cloudinary.uploader.destroy(`${type}/${user.id}`, {
     resource_type: type,
   });
 

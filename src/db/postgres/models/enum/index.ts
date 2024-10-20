@@ -5,7 +5,8 @@ export enum Role {
 }
 
 export enum PaymentStatus {
-  PENDING = 'pending',
-  SUCCESSFUL = 'successful',
-  FAILED = 'failed',
+  PENDING = 'PENDING',
+  SUCCESSFUL = 'PAID',
+  FAILED = 'FAILED',
+  REFUNDED = 'REFUNDED',
 }

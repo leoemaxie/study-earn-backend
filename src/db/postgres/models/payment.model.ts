@@ -49,9 +49,21 @@ export default class Payment extends Model<
   @NotNull
   declare userId: string;
 
+  @Attribute(DataTypes.STRING)
+  @NotNull
+  declare transactionReference: string;
+
+  @Attribute(DataTypes.STRING)
+  @NotNull
+  declare paymentReference: string;
+
+  @Attribute(DataTypes.DATE)
+  @NotNull
+  declare paidOn: Date;
+
+  @Attribute(DataTypes.STRING)
+  declare paymentDescription?: string;
+
   @Attribute(DataTypes.UUID)
   declare receiver?: CreationOptional<string>;
-
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }

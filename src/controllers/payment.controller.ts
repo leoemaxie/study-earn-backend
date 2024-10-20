@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
-import {BadRequest, Forbidden} from '@utils/error';
-import {Role} from '@models/enum';
+import {Forbidden, UnprocessableEntity} from '@utils/error';
+import {PaymentStatus, Role} from '@models/enum';
 import Payment from '@models/payment.model';
 import Student from '@models/student.model';
 import User from '@models/user.model';
@@ -13,12 +13,14 @@ export async function redeemPoints(
   try {
     const user = req.user as User;
     const {id, role} = user;
-    let points = req.user['student.points'];
+    const points = req.user['student.points'];
 
     if (role !== Role.STUDENT) throw new Forbidden('Access denied');
 
+    console.log(req.user);
+
     if (points < 1000) {
-      throw new BadRequest('Insufficient points');
+      throw new UnprocessableEntity('Insufficient points');
     }
 
     let payment: Payment | null = null;
@@ -27,7 +29,10 @@ export async function redeemPoints(
         {
           userId: id,
           amount: points / 100,
-          status: 'pending',
+          status: PaymentStatus.PENDING,
+          transactionReference: '',
+          paymentReference: '',
+          paidOn: new Date(),
         },
         {transaction: t}
       );

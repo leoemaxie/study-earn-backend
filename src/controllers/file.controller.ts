@@ -16,7 +16,7 @@ export async function downloadFile(
     };
 
     const data = await download(type, name, options);
-    return res.status(200).json(data);
+    return res.status(200).json({data: {url: data}});
   } catch (error) {
     return next(error);
   }

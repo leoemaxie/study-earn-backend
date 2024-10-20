@@ -1,11 +1,13 @@
 import {NextFunction, Request, Response} from 'express';
 import {BadRequest} from '@utils/error';
-import {Role} from '@models/enum';
+import {del} from '@services/user.file.service';
 import {formatUser} from '@utils/format';
 import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
+import Course from '@models/course.model';
 import * as sns from '@services/notification.service';
+import Department from '@models/department.model';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -43,7 +45,7 @@ export async function updateUserData(
       }
     });
 
-    User.sequelize?.transaction(async transaction => {
+    await User.sequelize.transaction(async transaction => {
       await User.update(userData, {where: {id}, transaction});
       await RoleModel[role].update(roleData, {
         where: {userId: id},
@@ -69,6 +71,7 @@ export async function deleteUser(
   next: NextFunction
 ) {
   try {
+    await del(req.user, 'picture');
     await User.destroy({where: {id: req.user?.id}});
     return res.sendStatus(204);
   } catch (error) {
@@ -76,19 +79,63 @@ export async function deleteUser(
   }
 }
 
-export async function getMates(
+export async function getUsers(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const mates = await User.findAll({
-      where: {department: req.user?.department, role: Role.STUDENT},
-      attributes: ['firstName', 'lastName', 'phoneNumber'],
+    const {
+      limit = 50,
+      offset = 0,
+      role,
+      department,
+      faculty,
+      order,
+    } = req.query;
+    const queryOptions: any = {
+      limit: Number(limit),
+      offset: Number(offset),
       raw: true,
-    });
+      where: {},
+      order:
+        typeof order === 'string'
+          ? [order.split(',')]
+          : [['department', 'DESC']],
+    };
 
-    return res.status(200).json({data: mates});
+    if (faculty) queryOptions.where.facultyId = String(faculty);
+    if (department) queryOptions.where.department = String(department);
+    if (role) queryOptions.where.role = String(role);
+
+    const users = await User.findAndCountAll({
+      ...queryOptions,
+      attributes: ['firstName', 'lastName', 'phoneNumber', 'email'],
+    });
+    const totalPages = Math.ceil(users.count / Number(limit));
+    const currentPage = Math.floor(Number(offset) / Number(limit)) + 1;
+    const url = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+    return res.status(200).json({
+      metadata: {
+        totalItems: users.count,
+        totalPages,
+        currentPage,
+        itemsPerPage: Number(limit),
+        links: {
+          self: `${url}?page=${currentPage}&limit=${limit}`,
+          first: `${url}?page=1&limit=${limit}`,
+          last: `${url}?page=${totalPages}&limit=${limit}`,
+          ...(currentPage > 1 && {
+            prev: `${url}?page=${currentPage - 1}&limit=${limit}`,
+          }),
+          ...(currentPage < totalPages && {
+            next: `${url}?page=${currentPage + 1}&limit=${limit}`,
+          }),
+        },
+      },
+      data: users.rows,
+    });
   } catch (error) {
     return next(error);
   }
@@ -107,6 +154,30 @@ export async function sendNotification(
       body,
     });
     return res.sendStatus(204);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function getCourses(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const courses = await Course.findAll({
+      include: [
+        {
+          model: Department,
+          where: {name: req.user.department},
+          attributes: [],
+        },
+      ],
+      attributes: ['id', 'name', 'code', 'unit', 'description'],
+      raw: true,
+    });
+
+    return res.status(200).json({data: courses});
   } catch (error) {
     return next(error);
   }

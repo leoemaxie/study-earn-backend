@@ -16,10 +16,10 @@ import {
   BelongsToMany,
 } from '@sequelize/core/decorators-legacy';
 
-export default class Order extends Model <
+export default class Order extends Model<
   InferAttributes<Order>,
   InferCreationAttributes<Order>
-  > {
+> {
   @PrimaryKey
   @Default(sql.uuidV4)
   @Attribute(DataTypes.UUID)

@@ -11,7 +11,7 @@ const download = async (
   } = {}
 ) => {
   const storage = supabase.storage.from(
-    `files${type}${options.markdown ? '/markdown' : '/pdf'}`
+    `files/${type}${options.markdown ? '/markdown' : '/pdf'}`
   );
 
   if (options.list) {
@@ -23,13 +23,12 @@ const download = async (
   const file = [
     name && options.semester ? `${name}-` : '',
     options.session
-      ? `${options.session}${type === 'calendar' ? `-${Number(options.session) + 1}` : ''}`
+      ? `${options.session}${type === 'calendar' ? `-${Number(options.session) - 1999}` : ''}${options.semester ? `-${options.semester}` : ''}`
       : '',
     options.markdown ? '.md' : '.pdf',
   ].join('');
 
-  const {data: publicUrlData} = storage.getPublicUrl(file);
-  return publicUrlData.publicUrl;
+  return storage.getPublicUrl(file).data.publicUrl;
 };
 
 const del = async (name: string, fileName: string, type: string) => {

@@ -30,7 +30,7 @@ router.delete(
     try {
       const type = req.params.type;
 
-      await fileService.del(req.user, type, req.body.fileName);
+      await fileService.del(req.user, type, req.body?.fileName);
       return res.sendStatus(204);
     } catch (error) {
       return next(error);
