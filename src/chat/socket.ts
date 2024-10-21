@@ -25,12 +25,13 @@ export async function connectIO(io: Server) {
 
   chat.on('connection', socket => {
     const user = socket.request.user;
-    socket.on('joinRoom', room => {
-      console.log(`${socket.id} just joined room ${room}`);
+    
+    socket.on('joinRoom', r => {
+      const room = Room.findOne({name: r});
 
-      socket.join(room);
+      socket.join(r);
 
-      chat.to(room).emit('roomJoined', `${socket.id} just joined the room`);
+      chat.to(r).emit('roomJoined', room);
     });
 
     socket.on('leaveRoom', room => {
