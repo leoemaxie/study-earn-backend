@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import {Forbidden, UnprocessableEntity} from '@utils/error';
 import {PaymentStatus, Role} from '@models/enum';
+import Activity from '@models/activity.model';
 import Payment from '@models/payment.model';
 import Student from '@models/student.model';
 import User from '@models/user.model';
@@ -19,6 +20,12 @@ export async function redeemPoints(
     if (role !== Role.STUDENT) throw new Forbidden('Access denied');
 
     if (points < 1000) {
+      await Activity.create({
+        userId: req.user.id,
+        type: 'redeem',
+        description: 'Redeemed points for payment',
+        metadata: {points, status: 'failed'},
+      });
       throw new UnprocessableEntity('Insufficient points');
     }
 
@@ -36,6 +43,15 @@ export async function redeemPoints(
       );
 
       await Student.update({points: 0}, {where: {userId: id}, transaction: t});
+      await Activity.create(
+        {
+          userId: id,
+          type: 'redeem',
+          description: 'Redeemed points for payment',
+          metadata: {points, status: 'success'},
+        },
+        {transaction: t}
+      );
     });
 
     return res.status(201).json({data: payment});

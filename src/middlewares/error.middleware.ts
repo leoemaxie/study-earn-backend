@@ -1,15 +1,28 @@
 import {Request, Response, NextFunction} from 'express';
 import {Error as MongooseError} from 'mongoose';
 import {MulterError} from 'multer';
-import CustomError from '@utils/error';
+import CustomError, {Unauthorized} from '@utils/error';
+import Activity from '@models/activity.model';
 
-export default function errorMiddleware(
+export default async function errorMiddleware(
   error: Error,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   if (error instanceof CustomError) {
+    if (error instanceof Unauthorized) {
+      if (req.user) {
+        await Activity.create({
+          userId: req.user.id,
+          type: 'unauthorized',
+          description:
+            'Unauthorized access: You recently tried to access your account with invalid credentials',
+          metadata: {ip: req.ip},
+        });
+      }
+    }
+
     return res
       .status(error.status)
       .json({error: {name: error.name, message: error.message}});
@@ -31,15 +44,13 @@ export default function errorMiddleware(
     const formattedError = error.message
       .split('\n')
       .map(err => err.replace('Validation error: ', ''));
-    return res
-      .status(400)
-      .json({
-        error: {
-          name: 'ValidationError',
-          message: `There are ${formattedError.length} errors in your request. Correct the errors and try again later`,
-          details: formattedError,
-        },
-      });
+    return res.status(400).json({
+      error: {
+        name: 'ValidationError',
+        message: `There are ${formattedError.length} errors in your request. Correct the errors and try again later`,
+        details: formattedError,
+      },
+    });
   }
 
   if (error instanceof MulterError) {

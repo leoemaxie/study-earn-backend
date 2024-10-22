@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "56th Inaugural Lecture",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "description": "The 56th Inaugural Lecture of the Ladoke Akintola University of Technology, Ogbomoso, Oyo State, Nigeria will be delivered by Professor Oluwaseun Ebiesuwa on Wednesday, 30th June, 2021 at the University Main Auditorium by 4:00pm.",
+    "date": "2021-06-30T16:00:00+00:00",
+    "location": "Main Auditorium, LAUTECH, Ogbomoso",
+    "category": ["Lecture"]
+  },
+  {
+    "id": 2,
+    "name": "LAUTECH Convocation Ceremony",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "description": "The 14th Convocation Ceremony of the Ladoke Akintola University of Technology, Ogbomoso, Oyo State, Nigeria will hold on Friday, 2nd July, 2021 at the University Main Auditorium by 10:00am.",
+    "date": "2021-07-02T10:00:00+00:00",
+    "location": "Main Auditorium, LAUTECH, Ogbomoso",
+    "category": ["Convocation"]
+  },
+  {
+    "id": 3,
+    "name": "LAUTECH Matriculation Ceremony",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "description": "The 2020/2021 Matriculation Ceremony of the Ladoke Akintola University of Technology, Ogbomoso, Oyo State, Nigeria will hold on Friday, 9th July, 2021 at the University Main Auditorium by 10:00am.",
+    "date": "2021-07-09T10:00:00+00:00",
+    "location": "Main Auditorium, LAUTECH, Ogbomoso",
+    "category": ["Matriculation"]
+  },
+  {
+    "id": 4,
+    "name": "LAUTECH Orientation Programme",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "description": "The 2020/2021 Orientation Programme for newly admitted students of the Ladoke Akintola University of Technology, Ogbomoso, Oyo State, Nigeria will hold on Monday, 12th July, 2021 at the University Main Auditorium by 10:00am.",
+    "date": "2021-07-12T10:00:00+00:00",
+    "location": "Main Auditorium, LAUTECH, Ogbomoso",
+    "category": ["Orientation"]
+  },
+  {
+    "id": 5,
+    "name": "LAUTECH Sports Festival",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "description": "The 2021 Sports Festival of the Ladoke Akintola University of Technology, Ogbomoso, Oyo State, Nigeria will hold from Monday, 19th July to Friday, 23rd July, 2021 at the University Sports Complex.",
+    "date": "2021-07-19T10:00:00+00:00",
+    "location": "Sports Complex, LAUTECH, Ogbomoso",
+    "category": ["Sports"]
+  }
+]

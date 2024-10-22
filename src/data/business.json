@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Ogbomoso Ride Hailing",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "ride-hailing@gmail.com",
+    "location": "Adenike, Ogbomoso",
+    "contactNumber": "09065723484",
+    "website": "https://www.ogbomosoridehailing.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "We are a ride-hailing company that provides transportation services to people in Ogbomoso. We are committed to providing safe, reliable, and affordable transportation services to our customers.",
+    "category": ["Logistics"]
+  },
+  {
+    "id": 2,
+    "name": "Satify Foods",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "satify@yahoo.com",
+    "location": "Under G, Ogbomoso",
+    "contactNumber": "09065723484",
+    "website": "https://www.satifyfoods.com",
+    "openingHours": "Monday - Friday: 7am - 6pm",
+    "description": "We are a food delivery company that provides delicious and healthy meals to people in Ogbomoso. Are you looking for a quick and easy way to get your favorite meals delivered to your doorstep? Look no further! Satify Foods is here to deliver",
+    "category": ["Food"]
+  },
+  {
+    "id": 3,
+    "name": "Cephas Tech Hub",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "cephas.hub@cephas.com",
+    "location": "Opposite LAUTECH, Ogbomoso",
+    "contactNumber": "08034253646",
+    "website": "https://www.cephas.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "World Class Tech Hub in Ogbomoso. We provide a conducive environment for tech enthusiasts to learn, collaborate, and innovate. Our services include co-working spaces, training programs, mentorship, and networking opportunities.",
+    "category": ["Technology"]
+  },
+  {
+    "id": 4,
+    "name": "Deekay Fashion House",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "deekay@gmail.com",
+    "location": "Sabo, Ogbomosho",
+    "contactNumber": "08036727341",
+    "website": "https://www.deekayfashion.com",
+    "openingHours": "Monday - Saturday: 9am - 7pm",
+    "description": "Deekay Fashion House is a fashion design company that specializes in creating unique and stylish clothing for all your needs",
+    "category": ["Fashion"]
+  },
+  {
+    "id": 5,
+    "name": "Green Earth Pharmacy",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "green@gmail.com",
+    "location": "Opposite LAUTECH, Ogbomoso",
+    "contactNumber": "080436782834",
+    "website": "https://www.greenearthpharmacy.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "Green Earth Pharmacy is a leading pharmacy in Ogbomoso that provides a wide range of pharmaceutical products and services to our customers. We are committed to providing high-quality products and excellent customer service.",
+    "category": ["Health"]
+  },
+  {
+    "id": 6,
+    "name": "John Stevens Fitness Club",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "john.stevens@outlook.com",
+    "location": "Khaki, Ogbomoso",
+    "contactNumber": "091742356423",
+    "website": "https://www.johnstevensfitness.com",
+    "openingHours": "Monday - Saturday: 6am - 9pm",
+    "description": "John Stevens Fitness Club is a premier fitness center in Ogbomoso that offers a wide range of fitness programs and services to help you achieve your health and fitness goals. Our state-of-the-art facilities and experienced trainers will help you get in shape and stay healthy.",
+    "category": ["Fitness", "Health"]
+  },
+  {
+    "id": 7,
+    "name": "Ope Laundry Services",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "ope234@outlook.com",
+    "location": "Stadium, Ogbomoso",
+    "contactNumber": "09065723484",
+    "website": "https://www.opelaundry.com",
+    "openingHours": "Monday - Saturday: 8am - 6pm",
+    "description": "Ope Laundry Services is a professional laundry service provider in Ogbomoso. Are you tired of doing your laundry yourself? Let us take care of it for you! We offer fast, reliable, and affordable laundry services to our customers.",
+    "category": ["Laundry"]
+  },
+  {
+    "id": 8,
+    "name": "LPT Tech Academy",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "academy@lpt.com",
+    "location": "Opposite LAUTECH, Ogbomoso",
+    "contactNumber": "08034253646",
+    "website": "https://www.lptacademy.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "LPT Tech Academy is a leading tech training institute in Ogbomoso. We offer a wide range of training programs in technology, including web development, mobile app development, digital marketing, and more. Our experienced instructors and hands-on training approach will help you develop the skills you need to succeed in the tech industry.",
+    "category": ["Technology", "Training"]
+  },
+  {
+    "id": 9,
+    "name": "Ogbomoso Bookstore",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "books@bookstore.co",
+    "location": "Adenike, Ogbomoso",
+    "contactNumber": "09065723484",
+    "website": "https://www.ogbomosobookstore.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "Ogbomoso Bookstore is a leading bookstore in Ogbomoso that offers a wide selection of books, stationery, and educational materials. Whether you're looking for textbooks, novels, or office supplies, we have everything you need to fuel your passion for reading and learning.",
+    "category": ["Books"]
+  },
+  {
+    "id": 10,
+    "name": "Olu Seun Manicure and Pedicure",
+    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "email": "olu@yahoo.com",
+    "location": "Opposite LAUTECH, Ogbomoso",
+    "contactNumber": "08034253646",
+    "website": "https://www.olu.com",
+    "openingHours": "Monday - Friday: 8am - 6pm",
+    "description": "Olu Seun Manicure and Pedicure is a professional nail salon in Ogbomoso that offers a wide range of nail care services to our customers. Whether you're looking for a manicure, pedicure, or nail art, our experienced technicians will help you achieve the perfect look for any occasion.",
+    "category": ["Beauty", "Fashion", "Health"]
+  }
+]

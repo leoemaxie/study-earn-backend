@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Notice of School Closure",
+    "content": "With the conclusion of the exam of the first semester, 2024 academic session, the school will be on a break for a week. The school will resume on the 23rd of October, 2024. We wish all students a happy break.",
+    "by": "School Management",
+    "date": "2024-10-23T02:57:27+00:00",
+    "tag": ["Announcemnt", "General"],
+    "priority": "High"
+  },
+  {
+    "title": "Admission Exercise for 2024/2025 Academic Session",
+    "content": "Applications are invited from suitably qualified candidates for admission into the various undergraduate programmes of the school for the 2024/2025 academic session. The application portal will be open from the 1st of November, 2024 to the 31st of January, 2025. Visit the school's website for more information.",
+    "by": "Admission Office",
+    "date": "2024-10-18T08:12:45+00:00",
+    "tag": ["Announcemnt", "Admission"],
+    "priority": "High"
+  },
+  {
+    "title": "Seminar on Entrepreneurship Development",
+    "content": "The school will be hosting a seminar on entrepreneurship development on the 15th of November, 2024. The seminar will feature guest speakers who are successful entrepreneurs and business leaders. Students are encouraged to attend and learn from their experiences.",
+    "by": "Entrepreneurship Centre",
+    "date": "2024-10-15T14:30:00+00:00",
+    "tag": ["Announcemnt", "Seminar"],
+    "priority": "Medium"
+  },
+  {
+    "title": "Career Fair 2024",
+    "content": "The school will be organizing a career fair on the 30th of November, 2024. The career fair will bring together employers, recruiters, and students to explore job opportunities and internships. Students are encouraged to participate and network with potential employers.",
+    "by": "Career Services",
+    "date": "2024-10-10T10:00:00+00:00",
+    "tag": ["Announcemnt", "Career"],
+    "priority": "Medium"
+  },
+  {
+    "title": "Library Closure for Renovation",
+    "content": "The school library will be closed for renovation from the 1st of November, 2024 to the 30th of November, 2024. During this period, students can access online resources and e-books through the school's digital library. We apologize for any inconvenience caused.",
+    "by": "Library Services",
+    "date": "2024-10-05T09:00:00+00:00",
+    "tag": ["Announcemnt", "Library"],
+    "priority": "Low"
+  }
+]

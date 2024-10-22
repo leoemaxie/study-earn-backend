@@ -11,6 +11,7 @@ import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
 import Payment from '@models/payment.model';
 import PaymentMethod from '@models/paymentMethod.model';
+import Activity from '@models/activity.model';
 
 export async function initializeDatabase() {
   const sequelize = new Sequelize({
@@ -29,6 +30,7 @@ export async function initializeDatabase() {
       Faculty,
       Payment,
       PaymentMethod,
+      Activity,
     ],
     define: {
       freezeTableName: true,

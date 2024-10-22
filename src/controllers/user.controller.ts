@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import {BadRequest} from '@utils/error';
 import {del} from '@services/user.file.service';
 import {formatUser} from '@utils/format';
-import {getMetadata} from '@utils/pagination';
+import {computeMetadata} from '@utils/pagination';
 import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
@@ -113,17 +113,13 @@ export async function getUsers(
       ...queryOptions,
       attributes: ['firstName', 'lastName', 'phoneNumber', 'email'],
     });
-    const totalPages = Math.ceil(users.count / Number(limit));
-    const currentPage = Math.floor(Number(offset) / Number(limit)) + 1;
-    const url = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     return res.status(200).json({
-      metadata: getMetadata(
-        url,
+      metadata: computeMetadata(
+        req,
         users.count,
         Number(limit),
-        currentPage,
-        totalPages
+        Number(offset)
       ),
       data: users.rows,
     });

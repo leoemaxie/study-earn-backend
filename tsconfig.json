@@ -22,6 +22,7 @@
       "@routes/*": ["routes/*"],
       "@controllers/*": ["controllers/*"],
       "@middlewares/*": ["middlewares/*"],
+      "@data/*": ["data/*"],
       "@types/*": ["types/*"],
       "@config/*": ["config/*"],
       "@db/*": ["db/*"],

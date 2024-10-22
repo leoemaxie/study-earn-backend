@@ -1,15 +1,19 @@
-export function getMetadata(
-  url: string,
+import {Request} from 'express';
+
+export function computeMetadata(
+  req: Request,
   total: number,
   limit: number,
-  currentPage: number,
-  totalPages: number
+  offset: number
 ) {
+  const url = req.protocol + '://' + req.get('host') + req.originalUrl;
+  const currentPage = Math.floor(offset / limit) + 1;
+  const totalPages = Math.ceil(total / limit);
   return {
+    currentPage,
+    itemsPerPage: limit,
     totalItems: total,
     totalPages,
-    currentPage,
-    itemsPerPage: Number(limit),
     links: {
       self: `${url}?page=${currentPage}&limit=${limit}`,
       first: `${url}?page=1&limit=${limit}`,

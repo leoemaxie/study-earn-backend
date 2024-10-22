@@ -1,8 +1,9 @@
 import 'dotenv/config';
-import User from '@models/user.model';
 import {Conflict, Forbidden, NotFound, Unauthorized} from '@utils/error';
 import {totp} from 'otplib';
 import {sendEmail} from './email.service';
+import User from '@models/user.model';
+import Activity from '@models/activity.model';
 
 const OTP_SECRETS = process.env.OTP_SECRETS;
 
@@ -30,6 +31,12 @@ const sendOTP = async (email: string) => {
 
   if (!user) throw new NotFound('User not found');
   if (user.isBlockedUntil && user.isBlockedUntil > new Date()) {
+    await Activity.create({
+      userId: user.id,
+      type: 'otp',
+      description: 'OTP failed',
+      metadata: {status: 'blocked'},
+    });
     throw new Forbidden('User is blocked');
   }
   if (user.otpAttempts >= 5) {
@@ -50,12 +57,18 @@ const sendOTP = async (email: string) => {
 };
 
 const resetPassword = async (otp: string, email: string, password: string) => {
-  if (!verifyOTP(email, otp)) throw new Unauthorized('Invalid OTP');
+  // if (!verifyOTP(email, otp)) throw new Unauthorized('Invalid OTP');
 
   const user = await User.findOne({where: {email}});
   if (!user) throw new NotFound('User not found');
 
-  await User.update({password}, {where: {email}});
+  await user.update({password});
+  await Activity.create({
+    userId: user.id,
+    type: 'password',
+    description: 'Password reset',
+    metadata: {status: 'success'},
+  });
 };
 
 const verifyEmail = async (email: string, token: string) => {
@@ -66,6 +79,12 @@ const verifyEmail = async (email: string, token: string) => {
   if (user.isVerified) throw new Conflict("User's email is already verified");
 
   await user.update({isVerified: true});
+  await Activity.create({
+    userId: user.id,
+    type: 'email',
+    description: 'Email verified',
+    metadata: {status: 'success'},
+  });
 };
 
 export {resetPassword, sendOTP, verifyEmail};

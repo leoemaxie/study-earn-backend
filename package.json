@@ -28,7 +28,8 @@
     "@middlewares": "build/middlewares",
     "@types": "build/types",
     "@config": "build/config",
-    "@db": "build/db"
+    "@db": "build/db",
+    "@data": "build/data"
   },
   "engines": {
     "node": ">=10.5.0"

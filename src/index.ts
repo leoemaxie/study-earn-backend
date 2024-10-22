@@ -11,6 +11,7 @@ import webHookPaymentRoute from '@routes/webhooks/payment.webhook.route';
 import chatRoute from '@routes/chat.route';
 import fileRoute from '@routes/file.route';
 import studentRoute from '@routes/student.route';
+import dataRoute from '@routes/data.route';
 import authMiddleware from '@middlewares/auth.middleware';
 import initializeDatabase from '@db/postgres';
 import errorMiddleware from '@middlewares/error.middleware';
@@ -46,6 +47,7 @@ app.use('/auth', authRoute);
 app.use('/webhook/payment', webHookPaymentRoute);
 app.use(`${BASE_URL}/user`, authMiddleware, userRoute);
 app.use(`${BASE_URL}/school`, schoolRoute);
+app.use(`${BASE_URL}/data`, authMiddleware, dataRoute);
 app.use(`${BASE_URL}/chat`, authMiddleware, chatRoute);
 app.use(`${BASE_URL}/file`, authMiddleware, fileRoute);
 app.use(`${BASE_URL}/student`, authMiddleware, studentRoute);
@@ -55,11 +57,9 @@ app.get('/health', (req, res) => {
   res.status(200).json({status: 'ok'});
 });
 app.use((req, res) => {
-  res
-    .status(404)
-    .json({
-      error: {name: 'NotFound', message: 'The requested route was not found'},
-    });
+  res.status(404).json({
+    error: {name: 'NotFound', message: 'The requested route was not found'},
+  });
 });
 
 httpServer.listen(PORT, async () => {

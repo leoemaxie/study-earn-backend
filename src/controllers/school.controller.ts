@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import {download} from '@services/file.service';
-import {getMetadata} from '@utils/pagination';
+import {computeMetadata} from '@utils/pagination';
 import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
 
@@ -19,17 +19,13 @@ export async function getDepartments(
     };
 
     const departments = await Department.findAndCountAll(queryOptions);
-    const totalPages = Math.ceil(departments.count / Number(limit));
-    const currentPage = Math.floor(Number(offset) / Number(limit)) + 1;
-    const url = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     return res.status(200).json({
-      metadata: getMetadata(
-        url,
+      metadata: computeMetadata(
+        req,
         departments.count,
         Number(limit),
-        currentPage,
-        totalPages
+        Number(offset)
       ),
       data: departments.rows,
     });
