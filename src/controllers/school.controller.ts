@@ -1,7 +1,8 @@
+import {Request, Response, NextFunction} from 'express';
+import {download} from '@services/file.service';
+import {getMetadata} from '@utils/pagination';
 import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
-import {download} from '@services/file.service';
-import {Request, Response, NextFunction} from 'express';
 
 export async function getDepartments(
   req: Request,
@@ -23,23 +24,13 @@ export async function getDepartments(
     const url = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     return res.status(200).json({
-      metadata: {
-        totalItems: departments.count,
-        totalPages,
+      metadata: getMetadata(
+        url,
+        departments.count,
+        Number(limit),
         currentPage,
-        itemsPerPage: Number(limit),
-        links: {
-          self: `${url}?page=${currentPage}&limit=${limit}`,
-          first: `${url}?page=1&limit=${limit}`,
-          last: `${url}?page=${totalPages}&limit=${limit}`,
-          ...(currentPage > 1 && {
-            prev: `${url}?page=${currentPage - 1}&limit=${limit}`,
-          }),
-          ...(currentPage < totalPages && {
-            next: `${url}?page=${currentPage + 1}&limit=${limit}`,
-          }),
-        },
-      },
+        totalPages
+      ),
       data: departments.rows,
     });
   } catch (error) {

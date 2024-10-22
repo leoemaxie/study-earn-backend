@@ -2,7 +2,7 @@ import 'dotenv/config';
 import {MailerSend, EmailParams, Sender, Recipient} from 'mailersend';
 import {Message} from '../types/message';
 
-async function sendEmail(content: Message): Promise<void> {
+export async function sendEmail(content: Message): Promise<void> {
   const mailerSend = new MailerSend({
     apiKey: process.env.MAILER_SEND_API_KEY!,
   });
@@ -24,5 +24,3 @@ async function sendEmail(content: Message): Promise<void> {
 
   await mailerSend.email.send(emailParams);
 }
-
-export {sendEmail};

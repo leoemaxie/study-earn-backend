@@ -14,16 +14,14 @@ export async function redeemPoints(
     const user = req.user as User;
     const {id, role} = user;
     const points = req.user['student.points'];
+    let payment: Payment | null = null;
 
     if (role !== Role.STUDENT) throw new Forbidden('Access denied');
-
-    console.log(req.user);
 
     if (points < 1000) {
       throw new UnprocessableEntity('Insufficient points');
     }
 
-    let payment: Payment | null = null;
     Payment.sequelize.transaction(async t => {
       payment = await Payment.create(
         {
@@ -52,10 +50,7 @@ export async function getPaymentHistory(
   next: NextFunction
 ) {
   try {
-    const user = req.user as User;
-    const {id} = user;
-
-    const payments = await Payment.findAll({where: {userId: id}});
+    const payments = await Payment.findAll({where: {userId: req.user.id}});
 
     return res.status(200).json({data: payments});
   } catch (error) {

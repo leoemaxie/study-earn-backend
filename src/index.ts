@@ -7,7 +7,7 @@ import http from 'http';
 import authRoute from '@routes/auth.route';
 import userRoute from '@routes/user.route';
 import schoolRoute from '@routes/school.route';
-import webHookPaymentRoute from '@routes/payment.webhook.route';
+import webHookPaymentRoute from '@routes/webhooks/payment.webhook.route';
 import chatRoute from '@routes/chat.route';
 import fileRoute from '@routes/file.route';
 import studentRoute from '@routes/student.route';
@@ -55,7 +55,11 @@ app.get('/health', (req, res) => {
   res.status(200).json({status: 'ok'});
 });
 app.use((req, res) => {
-  res.status(404).json({error: 'Not found'});
+  res
+    .status(404)
+    .json({
+      error: {name: 'NotFound', message: 'The requested route was not found'},
+    });
 });
 
 httpServer.listen(PORT, async () => {

@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-import User from '@models/user.model';
-import Role from '@models/enum/role.model';
 import {NextFunction, Request, Response} from 'express';
 import {generateAccessToken, generateRefreshToken} from '@services/jwt.service';
 import {BadRequest, Conflict, NotFound, Unauthorized} from '@utils/error';
 import {verifyPassword} from '@utils/password';
+import jwt from 'jsonwebtoken';
+import User from '@models/user.model';
+import Role from '@models/enum/role.model';
 import * as service from '@services/auth.service';
 
 export async function register(
@@ -77,10 +77,9 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
 export async function logout(req: Request, res: Response, next: NextFunction) {
   try {
-    const refreshToken = req.body.token;
-    const email = req.body.email;
+    const {token, email} = req.body;
 
-    if (!refreshToken || !email) throw new BadRequest('Missing token or email');
+    if (!token || !email) throw new BadRequest('Missing token or email');
 
     return res.sendStatus(204);
   } catch (error: unknown) {
@@ -136,8 +135,10 @@ export async function resetPassword(
 ) {
   try {
     const {token, password, email} = req.body;
-    if (!token || !password || !email)
+
+    if (!token || !password || !email) {
       throw new BadRequest('Missing token or password');
+    }
 
     await service.resetPassword(token as string, email, password);
     return res.status(200).json({message: 'Password reset successful'});
@@ -153,6 +154,7 @@ export async function verifyEmail(
 ) {
   try {
     const {token, email} = req.body;
+
     if (!token || !email) throw new BadRequest('Missing token or email');
 
     await service.verifyEmail(email, token as string);

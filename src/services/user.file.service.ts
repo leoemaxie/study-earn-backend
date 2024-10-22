@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import {v2 as cloudinary} from 'cloudinary';
-import User from '@models/user.model';
 import {BadRequest} from '@utils/error';
+import User from '@models/user.model';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,14 +15,13 @@ const upload = async (
   user: User,
   type = 'files'
 ) => {
-  if (!file) throw new BadRequest('No file provided');
+  const mimetype = file?.mimetype.split('/')[0];
 
-  const mimetype = file.mimetype.split('/')[0];
+  if (!file) throw new BadRequest('No file provided');
   if (type === 'picture' && mimetype !== 'image') {
     throw new BadRequest('File must be an image');
   }
 
-  const path = `${user.id}.${file.mimetype.split('/')[1]}`;
   const uploadStream = () => {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(

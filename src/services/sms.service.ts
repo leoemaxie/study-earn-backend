@@ -1,22 +1,17 @@
+import 'dotenv/config';
 import {Message} from '../types/message';
 import twilio from 'twilio';
-import 'dotenv/config';
 
-const accountSid =
-  process.env.TWILIO_ACCOUNT_SID || 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+const accountSid = process.env.TWILIO_ACCOUNT_SID || 'ACXXXXXXXXXXXX';
 const authToken = process.env.TWILIO_AUTH_TOKEN || '';
 const from = process.env.SMS_FROM as string;
 const client = twilio(accountSid, authToken);
 
-async function sendSMS(message: Message): Promise<void> {
+export async function sendSMS(message: Message): Promise<void> {
   const {body, to} = JSON.parse(message.toString());
-  const response = await client.messages.create({
+  await client.messages.create({
     body,
     from,
     to,
   });
-
-  console.log(response.body);
 }
-
-export {sendSMS};

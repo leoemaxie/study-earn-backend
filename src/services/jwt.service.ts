@@ -1,8 +1,6 @@
+import 'dotenv/config';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import User from '@models/user.model';
-
-dotenv.config();
 
 const generateToken = (user: User, time: string, secret: string) => {
   try {
