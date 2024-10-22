@@ -12,9 +12,9 @@ import {
   NotNull,
   Default,
   PrimaryKey,
-  BeforeSave,
   HasMany,
   Table,
+  BeforeSave,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
@@ -45,16 +45,16 @@ export default class User extends Model<
   declare email: string;
 
   @Attribute({
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(256),
     allowNull: false,
     validate: {
       len: {
-        args: [8, 255],
+        args: [8, 128],
         msg: 'Password must be at least 8 characters',
       },
       is: {
-        args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
-        msg: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
+        args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        msg: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       },
     },
   })
@@ -128,6 +128,14 @@ export default class User extends Model<
   @Attribute(DataTypes.DATE)
   declare isBlockedUntil: CreationOptional<Date>;
 
+  @Attribute(DataTypes.TINYINT)
+  @Default(0)
+  declare loginAttempts: CreationOptional<number>;
+
+  @Attribute(DataTypes.TINYINT)
+  @Default(0)
+  declare otpAttempts: CreationOptional<number>;
+
   @Attribute(DataTypes.ENUM(...Object.values(Role)))
   @NotNull
   declare role: string;
@@ -162,7 +170,7 @@ export default class User extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  @BeforeSave
+  @BeforeSave()
   static async hashPasswordHook(instance: User) {
     if (instance.changed('password')) {
       instance.password = await hashPassword(instance.password);

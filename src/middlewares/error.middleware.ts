@@ -33,7 +33,13 @@ export default function errorMiddleware(
       .map(err => err.replace('Validation error: ', ''));
     return res
       .status(400)
-      .json({error: {name: 'ValidationError', message: formattedError}});
+      .json({
+        error: {
+          name: 'ValidationError',
+          message: `There are ${formattedError.length} errors in your request. Correct the errors and try again later`,
+          details: formattedError,
+        },
+      });
   }
 
   if (error instanceof MulterError) {

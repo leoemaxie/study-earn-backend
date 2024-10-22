@@ -116,13 +116,11 @@ export async function refreshToken(
 
 export async function sendOTP(req: Request, res: Response, next: NextFunction) {
   try {
-    const {email} = req.body;
+    const email = req.body.email.trim();
     if (!email) throw new BadRequest('Missing email');
 
     await service.sendOTP(email);
-    return res
-      .status(200)
-      .json({message: 'OTP sent successfully. Check your email'});
+    return res.status(200).json({message: 'OTP sent successfully. Check your email'});
   } catch (error: unknown) {
     return next(error);
   }
@@ -137,10 +135,10 @@ export async function resetPassword(
     const {token, password, email} = req.body;
 
     if (!token || !password || !email) {
-      throw new BadRequest('Missing token or password');
+      throw new BadRequest('Missing token, email or password');
     }
 
-    await service.resetPassword(token as string, email, password);
+    await service.resetPassword(token, email.trim(), password);
     return res.status(200).json({message: 'Password reset successful'});
   } catch (error: unknown) {
     return next(error);
@@ -157,7 +155,7 @@ export async function verifyEmail(
 
     if (!token || !email) throw new BadRequest('Missing token or email');
 
-    await service.verifyEmail(email, token as string);
+    await service.verifyEmail(email, token);
     return res.status(200).json({message: 'Email verified successfully'});
   } catch (error: unknown) {
     return next(error);

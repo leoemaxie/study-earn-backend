@@ -1,9 +1,8 @@
-import User from '@models/user.model';
 import {CUSTOM_FIELDS} from './fields';
-import {Model, InferAttributes, InferCreationAttributes} from '@sequelize/core';
+import User from '@models/user.model';
 
 export function formatUser(user: User) {
-  const {password, ...userData} = user;
+  const {password, isBlockedUntil, loginAttempts, otpAttempts, ...userData} = user;
   const formattedData = Object.keys(userData).reduce(
     (acc, key) => {
       if (key.startsWith(`${user.role}.`)) {

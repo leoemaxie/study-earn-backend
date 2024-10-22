@@ -34,6 +34,15 @@ export async function connectIO(io: Server) {
       chat.to(r).emit('roomJoined', room);
     });
 
+    socket.on('createRoom', async room => {
+      const newRoom = new Room({name: room});
+      await newRoom.save();
+
+      socket.join(room);
+
+      chat.emit('roomCreated', newRoom);
+    });
+
     socket.on('leaveRoom', room => {
       console.log(`${socket.id} has left room ${room}`);
 
