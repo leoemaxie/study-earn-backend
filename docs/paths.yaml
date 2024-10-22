@@ -1,0 +1,793 @@
+/auth/register:
+  post:
+    summary: Register a new user
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegisterRequest'
+    responses:
+      '201':
+        description: User created successfully
+      '400':
+        description: Invalid number of fields or invalid field
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '409':
+        description: User already exists
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/login:
+  post:
+    summary: Login a user
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginRequest'
+    responses:
+      '200':
+        description: User logged in successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginResponse'
+      '400':
+        description: Invalid number of fields or missing email or password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: User not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Invalid email or password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/logout:
+  post:
+    summary: Logout a user
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LogoutRequest'
+    responses:
+      '204':
+        description: User logged out successfully
+      '400':
+        description: Missing token or email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/refresh-token:
+  post:
+    summary: Refresh access token
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RefreshTokenRequest'
+    responses:
+      '200':
+        description: Access token refreshed successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenResponse'
+      '401':
+        description: Unauthorized or invalid token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/reset-password:
+  post:
+    summary: Reset user password
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResetPasswordRequest'
+    responses:
+      '200':
+        description: Password reset successful
+      '400':
+        description: Missing token, password, or email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/send-otp:
+  post:
+    summary: Send OTP to user email
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SendOtpRequest'
+    responses:
+      '200':
+        description: OTP sent successfully
+      '400':
+        description: Missing email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/auth/verify-email:
+  post:
+    summary: Verify user email
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VerifyEmailRequest'
+    responses:
+      '200':
+        description: Email verified successfully
+      '400':
+        description: Missing token or email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/profile:
+  get:
+    summary: Get user profile
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: User profile retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user:
+  patch:
+    summary: Update user data
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUserRequest'
+    responses:
+      '200':
+        description: User data updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      '400':
+        description: Invalid request data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+  delete:
+    summary: Delete user account
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    responses:
+      '204':
+        description: User account deleted successfully
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/file/upload/{type}:
+  post:
+    summary: Upload a file
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                format: binary
+    responses:
+      '200':
+        description: File uploaded successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/file/delete/{type}:
+  delete:
+    summary: Delete a file
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fileName:
+                type: string
+    responses:
+      '204':
+        description: File deleted successfully
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/courses:
+  get:
+    summary: Get user courses
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: List of courses retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseListResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/school/departments:
+  get:
+    summary: Get list of departments
+    tags:
+      - School
+    parameters:
+      - name: limit
+        in: query
+        description: Number of departments to return
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        description: Number of departments to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+      - name: faculty
+        in: query
+        description: Filter departments by faculty ID
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of departments retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/school/faculty:
+  get:
+    summary: Get list of faculties
+    tags:
+      - School
+    responses:
+      '200':
+        description: List of faculties retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/school/calendar:
+  get:
+    summary: Get academic calendar
+    tags:
+      - School
+    parameters:
+      - name: semester
+        in: query
+        description: Semester to filter by
+        required: false
+        schema:
+          type: string
+      - name: session
+        in: query
+        description: Session to filter by
+        required: false
+        schema:
+          type: string
+      - name: markdown
+        in: query
+        description: Return data in markdown format
+        required: false
+        schema:
+          type: boolean
+    responses:
+      '200':
+        description: Academic calendar retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalendarResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/student/scholarships:
+  get:
+    summary: Get list of scholarships
+    tags:
+      - Student
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: List of scholarships retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScholarshipListResponse'
+      '403':
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/student/study/download/{type}/{name}:
+  get:
+    summary: Download study material
+    tags:
+      - Student
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: File downloaded successfully
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      '403':
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/student/points:
+  post:
+    summary: Update student points
+    tags:
+      - Student
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatePointsRequest'
+    responses:
+      '200':
+        description: Student points updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointsResponse'
+      '400':
+        description: Invalid request data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/payment/method:
+  post:
+    summary: Add a payment method
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AddPaymentMethodRequest'
+    responses:
+      '201':
+        description: Payment method added successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+  get:
+    summary: Get payment methods
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: query
+        description: Payment method ID
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Payment methods retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Payment method not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+  patch:
+    summary: Update a payment method
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: query
+        description: Payment method ID
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatePaymentMethodRequest'
+    responses:
+      '200':
+        description: Payment method updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentMethodResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Payment method not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+  delete:
+    summary: Delete a payment method
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: query
+        description: Payment method ID
+        required: true
+        schema:
+          type: string
+    responses:
+      '204':
+        description: Payment method deleted successfully
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Payment method not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/payment/redeem:
+  get:
+    summary: Redeem points
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Points redeemed successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointsResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '422':
+        description: Unprocessable Entity
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/user/payment/history:
+  get:
+    summary: Get payment history
+    tags:
+      - Payment
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Payment history retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentHistoryResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'

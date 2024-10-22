@@ -1,0 +1,419 @@
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+
+schemas:
+  LoginRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+    required:
+      - email
+      - password
+
+  LoginResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      expiresIn:
+        type: integer
+      tokenType:
+        type: string
+
+  LogoutRequest:
+    type: object
+    properties:
+      token:
+        type: string
+      email:
+        type: string
+        format: email
+    required:
+      - token
+      - email
+
+  RefreshTokenRequest:
+    type: object
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      expiresIn:
+        type: integer
+      tokenType:
+        type: string
+
+  ResetPasswordRequest:
+    type: object
+    properties:
+      token:
+        type: string
+      password:
+        type: string
+        format: password
+      email:
+        type: string
+        format: email
+    required:
+      - token
+      - password
+      - email
+
+  SendOtpRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+    required:
+      - email
+
+  VerifyEmailRequest:
+    type: object
+    properties:
+      token:
+        type: string
+      email:
+        type: string
+        format: email
+    required:
+      - token
+      - email
+
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+        format: email
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      department:
+        type: string
+      role:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+
+  UpdateUserRequest:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      department:
+        type: string
+    required:
+      - firstName
+      - lastName
+      - phoneNumber
+      - department
+
+  RegisterRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        format: password
+      role:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      department:
+        type: string
+      phoneNumber:
+        type: string
+    required:
+      - email
+      - password
+      - role
+      - firstName
+      - lastName
+      - department
+      - phoneNumber
+    Course:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      code:
+        type: string
+      unit:
+        type: integer
+      description:
+        type: string
+
+  CourseListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Course'
+
+  Department:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      facultyId:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+
+  Faculty:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+
+  DepartmentListResponse:
+    type: object
+    properties:
+      metadata:
+        type: object
+        properties:
+          totalItems:
+            type: integer
+          totalPages:
+            type: integer
+          currentPage:
+            type: integer
+          itemsPerPage:
+            type: integer
+          links:
+            type: object
+            properties:
+              self:
+                type: string
+              first:
+                type: string
+              last:
+                type: string
+              prev:
+                type: string
+              next:
+                type: string
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Department'
+
+  FacultyListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Faculty'
+
+  CalendarResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          url:
+            type: string
+
+  Scholarship:
+    type: object
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      datePublished:
+        type: string
+        format: date-time
+      url:
+        type: string
+      applyLink:
+        type: string
+      applicationDeadline:
+        type: string
+
+  ScholarshipListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Scholarship'
+
+  UpdatePointsRequest:
+    type: object
+    properties:
+      minutes:
+        type: number
+      score:
+        type: number
+      units:
+        type: number
+    required:
+      - minutes
+      - score
+      - units
+
+  PointsResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          points:
+            type: number
+
+  AddPaymentMethodRequest:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountName:
+        type: string
+      bankName:
+        type: string
+    required:
+      - accountNumber
+      - accountName
+      - bankName
+
+  UpdatePaymentMethodRequest:
+    type: object
+    properties:
+      accountNumber:
+        type: string
+      accountName:
+        type: string
+      bankName:
+        type: string
+
+  PaymentMethodResponse:
+    type: object
+    properties:
+      id:
+        type: string
+      accountNumber:
+        type: string
+      accountName:
+        type: string
+      bankName:
+        type: string
+      userId:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+
+  PaymentMethodListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/PaymentMethodResponse'
+
+  PaymentHistoryResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            userId:
+              type: string
+            amount:
+              type: number
+            status:
+              type: string
+            transactionReference:
+              type: string
+            paymentReference:
+              type: string
+            paidOn:
+              type: string
+              format: date-time
+
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: object
+        properties:
+          name:
+            type: string
+          message:
+            type: string
+
+responses:
+  ServerError:
+    description: An error occurred, Please try again later
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

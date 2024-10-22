@@ -1,0 +1,20 @@
+openapi: 3.0.0
+info:
+  title: Study Earn Backend API
+  description: API for the Study Earn application
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@email.com
+servers:
+  - url: http://localhost:3000.com
+    description: Production Server
+
+paths:
+  $ref: 'paths.yaml'
+
+components:
+  $ref: './components.yaml'
+
+security:
+  - BearerAuth: []
