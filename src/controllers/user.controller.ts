@@ -28,17 +28,13 @@ export async function updateUserData(
     const {id, role} = user;
     const fields = ALLOWED_FIELDS[role];
     const customFields = CUSTOM_FIELDS[role];
+    const userData = {};
+    const roleData = {};
 
     Object.keys(req.body).forEach(key => {
       if (!fields.includes(key)) {
         throw new BadRequest('Invalid field');
       }
-    });
-
-    const userData = {};
-    const roleData = {};
-
-    Object.keys(req.body).forEach(key => {
       if (customFields.includes(key)) {
         roleData[key] = req.body[key];
       } else {

@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import * as userController from '@controllers/user.controller';
 import * as paymentController from '@controllers/payment.controller';
+import * as activityController from '@controllers/activity.controller';
 import fileRoute from './user.file.route';
 import paymentRoute from './payment.route';
 
@@ -15,5 +16,7 @@ router.use('/payment/method', paymentRoute);
 router.get('/payment/redeem', paymentController.redeemPoints);
 router.get('/payment/history', paymentController.getPaymentHistory);
 router.get('/courses', userController.getCourses);
+router.get('/activity', activityController.getActivities);
+router.delete('/activity/:id', activityController.deleteActivity);
 
 export default router;

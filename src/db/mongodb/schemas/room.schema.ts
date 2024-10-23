@@ -4,17 +4,18 @@ export interface IRoom {
   name: string;
   description: string;
   users: [Schema.Types.ObjectId];
-  createdAt: Date;
   picture?: string;
 }
 
-const roomSchema = new Schema<IRoom>({
-  name: String,
-  description: String,
-  users: [Schema.Types.ObjectId],
-  createdAt: Date,
-  picture: String,
-});
+const roomSchema = new Schema<IRoom>(
+  {
+    name: String,
+    description: String,
+    users: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    picture: String,
+  },
+  {timestamps: true}
+);
 
 roomSchema.index({name: 1}, {unique: true});
 

@@ -2,21 +2,22 @@ import {Schema, model} from 'mongoose';
 
 export interface IMessage {
   message: string;
-  senderId: string;
+  senderId: Schema.Types.ObjectId;
   chatId: Schema.Types.ObjectId;
-  date: Date;
   readBy: [Schema.Types.ObjectId];
   isRead: boolean;
 }
 
-const messageSchema = new Schema<IMessage>({
-  message: String,
-  chatId: Schema.Types.ObjectId,
-  senderId: String,
-  date: Date,
-  readBy: [Schema.Types.ObjectId],
-  isRead: Boolean,
-});
+const messageSchema = new Schema<IMessage>(
+  {
+    message: String,
+    chatId: {type: Schema.Types.ObjectId, ref: 'Chat'},
+    senderId: {type: Schema.Types.ObjectId, ref: 'User'},
+    readBy: [Schema.Types.ObjectId],
+    isRead: Boolean,
+  },
+  {timestamps: true}
+);
 
 messageSchema.index({chatId: 1, date: -1});
 messageSchema.index({date: 1}, {expireAfterSeconds: 60 * 60 * 24 * 7});

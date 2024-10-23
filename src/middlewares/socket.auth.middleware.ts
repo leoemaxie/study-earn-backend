@@ -9,7 +9,7 @@ export default function socketAuthentication(
   next: (err?: Error) => void
 ) {
   try {
-    const token = socket.handshake.auth.token;
+    const token = socket.handshake.auth.token || socket.handshake.headers.token;
 
     if (!token) {
       return next(new Unauthorized('No token provided'));

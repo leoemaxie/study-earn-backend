@@ -1,11 +1,14 @@
 import {Request, Response, NextFunction} from 'express';
-import * as business from '@data/business.json';
-import * as announcement from '@data/announcement.json';
-import * as events from '@data/events.json';
+import business from '@data/business.json';
+import announcement from '@data/announcement.json';
+import events from '@data/events.json';
 
 export function getBusiness(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.status(200).json({data: business});
+    const payload = {
+      data: business,
+    };
+    return res.status(200).json(payload);
   } catch (error: unknown) {
     return next(error);
   }

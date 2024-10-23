@@ -1,8 +1,10 @@
 import {CUSTOM_FIELDS} from './fields';
+import {Error as MongooseError} from 'mongoose';
 import User from '@models/user.model';
 
 export function formatUser(user: User) {
-  const {password, isBlockedUntil, loginAttempts, otpAttempts, ...userData} = user;
+  const {password, isBlockedUntil, loginAttempts, otpAttempts, ...userData} =
+    user;
   const formattedData = Object.keys(userData).reduce(
     (acc, key) => {
       if (key.startsWith(`${user.role}.`)) {
@@ -39,4 +41,35 @@ export function transformFields(role: string, data: Record<string, any>) {
     },
     {} as Record<string, any>
   );
+}
+
+export function formatError(error: MongooseError) {
+  if (error instanceof MongooseError.ValidationError) {
+    let errors = Object.values(error.errors);
+    let length = errors.length;
+    return {
+      error: {
+        name: 'validationError',
+        message: `You have ${length} errors in your request`,
+        details: errors.map(({message}) => message),
+      },
+    };
+  }
+
+  if (error instanceof MongooseError.CastError) {
+    return {error: {name: 'CastError', message: 'Invalid value provided'}};
+  }
+
+  if (error.message.includes('duplicate key error collection')) {
+    const match = error.message.match(/: (.+)$/);
+    return {
+      error: {
+        name: 'DuplicateError',
+        message: 'Duplicate value provided',
+        details: match ? match[1] : 'No details available',
+      },
+    };
+  }
+
+  return error.message;
 }

@@ -6,17 +6,16 @@ import Chat from '@schemas/chat.schema';
 import Message from '@schemas/message.schema';
 import User from '@schemas/user.schema';
 import Room from '@schemas/room.schema';
+import {formatError} from '@utils/format';
+import Activity from '@models/activity.model';
 
 const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';
 const path = `api/${process.env.VERSION || 'v1'}/chat`;
 
 (async () => {
-  try {
-    await connect(URL);
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.log('Error connecting to MongoDB:', error);
-  }
+  connect(URL)
+    .then(e => console.log('Successfully connected to MongoDB'))
+    .catch(e => console.error(e));
 })();
 
 export async function connectIO(io: Server) {
@@ -25,64 +24,200 @@ export async function connectIO(io: Server) {
 
   chat.on('connection', socket => {
     const user = socket.request.user;
-    
-    socket.on('joinRoom', r => {
-      const room = Room.findOne({name: r});
 
-      socket.join(r);
+    User.findOneAndUpdate({_id: user._id}, {online: true}).catch(e =>
+      console.error(e)
+    );
 
-      chat.to(r).emit('roomJoined', room);
+    socket.on('joinRoom', async r => {
+      Room.findOne({name: r})
+        .then(room => {
+          if (!room) {
+            return socket.emit('error', 'Room not found');
+          }
+          socket.join(r);
+          return chat.to(r).emit('roomJoined', room);
+        })
+        .catch(e => socket.emit('error', formatError(e)));
     });
 
-    socket.on('createRoom', async room => {
-      const newRoom = new Room({name: room});
-      await newRoom.save();
+    socket.on('adUserToRoom', async name => {
+      await Room.findOne({name})
+        .then(room => {
+          if (!room) {
+            return socket.emit('error', 'Room not found');
+          }
+          if (room.users.includes(user._id)) {
+            return socket.emit('error', 'User already in room');
+          }
 
-      socket.join(room);
+          room.users.push(user._id);
+          return room
+            .save()
+            .then(_ => {
+              Activity.create({
+                userId: user.id,
+                type: 'chat',
+                description: `You just joined the room ${name}`,
+                metadata: {room: name},
+              }).catch(e => console.error(e));
+            })
+            .catch(e => socket.emit('error', formatError(e)));
+        })
+        .catch(e => socket.emit('error', formatError(e)));
+    });
 
-      chat.emit('roomCreated', newRoom);
+    socket.on('removeUserFromRoom', async name => {
+      await Room.findOne({name})
+        .then(room => {
+          if (!room) {
+            return socket.emit('error', 'Room not found');
+          }
+          if (!room.users.includes(user._id)) {
+            return socket.emit('error', 'User not in room');
+          }
+          room.users = room.users.filter(u => u !== user._id) as any;
+          return room
+            .save()
+            .then(_ => {
+              Activity.create({
+                userId: user.id,
+                type: 'chat',
+                description: `You just left the room ${name}`,
+                metadata: {room: name},
+              }).catch(e => console.error(e));
+            })
+            .catch(e => socket.emit('error', formatError(e)));
+        })
+        .catch(e => socket.emit('error', formatError(e)));
+    });
+
+    socket.on('createRoom', async data => {
+      const {name, description} = data;
+      await new Room({name, description, users: [user._id]})
+        .save()
+        .then(room => {
+          socket.join(name);
+          chat.emit('roomCreated', {id: room._id, name});
+          Activity.create({
+            userId: user.id,
+            type: 'chat',
+            description: `You just created the room ${name}`,
+            metadata: {name, room},
+          }).catch(e => console.error(e));
+        })
+        .catch(e => socket.emit('error', formatError(e)));
+    });
+
+    socket.on('deleteRoom', async name => {
+      await Room.findOneAndDelete({name}, {projection: {_id: 0, __v: 0}})
+        .populate('users', 'name')
+        .then(room => {
+          if (!room) {
+            return socket.emit('error', 'Room not found');
+          }
+          chat.emit('roomDeleted', room);
+          Activity.create({
+            userId: user.id,
+            type: 'chat',
+            description: `You just deleted the room ${name}`,
+            metadata: {name, room},
+          }).catch(e => console.error(e));
+          return;
+        })
+        .catch(e => socket.emit('error', formatError(e)));
     });
 
     socket.on('leaveRoom', room => {
-      console.log(`${socket.id} has left room ${room}`);
-
       socket.leave(room);
-
-      chat.to(room).emit('roomLeft', `${socket.id} has left the room`);
+      chat.to(room).emit('roomLeft', `${user.name} has left the room`);
     });
 
-    socket.on('messageToRoom', data => {
-      console.log(
-        `${socket.id} posted a message to room ${data.room}: ${data.message}`
-      );
-
-      chat.to(data.room).emit('message', {
-        id: socket.id,
+    socket.on('messageToRoom', async data => {
+      await new Message({
         message: data.message,
-      });
+        senderId: user._id,
+        chatId: data.room,
+        readBy: [],
+        isRead: false,
+      })
+        .save()
+        .then(_ => {
+          chat.to(data.room).emit('message', {
+            id: socket.id,
+            message: data.message,
+            user: user.name,
+          });
+        })
+        .catch(e => socket.emit('error', formatError(e)));
     });
 
-    socket.on('messageToAll', data => {
-      console.log(
-        `${socket.id} sent a message to all clients: ${data.message}`
-      );
-
-      chat.emit('message', {
-        id: socket.id,
+    socket.on('message', async data => {
+      await new Message({
         message: data.message,
-      });
+        senderId: user._id,
+        readBy: [],
+        isRead: false,
+      })
+        .save()
+        .then(_ => {
+          chat.emit('message', {
+            id: user._id,
+            message: data.message,
+            user: user.name,
+          });
+        })
+        .catch(e => socket.emit('error', formatError(e)));
     });
 
-    socket.on('privateMessage', (msg, recepientId) => {
-      console.log(`${socket.id} sent a private message to ${recepientId}`);
+    socket.on('newChat', async data => {
+      const {recipientId, room} = data;
+      await User.findOne({id: recipientId})
+        .then(recipient => {
+          if (!recipient) {
+            return socket.emit('error', 'Recipient not found');
+          }
+          new Chat({
+            message: [],
+            sender: user._id,
+            recipient: recipientId,
+            room,
+          })
+            .save()
+            .catch(e => socket.emit('error', formatError(e)));
+
+          if (recipient.online) {
+            return chat.to(recipientId).emit('newChat', chat);
+          }
+          return;
+        })
+        .catch(e => socket.emit('error', formatError(e)));
     });
 
-    socket.on('typing', () => {
-      console.log(`${socket.id} is typing...`);
+    socket.on('delteteMessage', async id => {
+      await Message.findOneAndDelete({_id: id})
+        .then(_ => {
+          chat.emit('messageDeleted', id);
+        })
+        .catch(e => socket.emit('error', formatError(e)));
+    });
+
+    socket.on('privateMessage', async (msg, recipientId) => {
+      const recipientSocket = chat.sockets.get(recipientId);
+      if (recipientSocket) {
+        recipientSocket.emit('privateMessage', {
+          id: socket.id,
+          message: msg,
+          user: user.name,
+        });
+      } else {
+      }
     });
 
     socket.on('disconnect', () => {
-      console.log(`${socket.id} disconnected`);
+      User.findOneAndUpdate({id: user.id}, {online: false}).catch(e =>
+        console.error(e)
+      );
     });
   });
 }

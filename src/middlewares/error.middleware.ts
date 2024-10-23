@@ -1,5 +1,4 @@
 import {Request, Response, NextFunction} from 'express';
-import {Error as MongooseError} from 'mongoose';
 import {MulterError} from 'multer';
 import CustomError, {Unauthorized} from '@utils/error';
 import Activity from '@models/activity.model';
@@ -22,19 +21,9 @@ export default async function errorMiddleware(
         });
       }
     }
-
     return res
       .status(error.status)
       .json({error: {name: error.name, message: error.message}});
-  }
-
-  if (
-    error instanceof MongooseError.ValidatorError ||
-    error instanceof MongooseError.ValidationError
-  ) {
-    return res
-      .status(400)
-      .json({error: {name: 'ValidationError', message: error.message}});
   }
 
   if (

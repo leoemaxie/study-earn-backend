@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Ogbomoso Ride Hailing",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKgwosisfwS_8m7xi2RTGvvqP9zsU6UYLdPA&s",
     "email": "ride-hailing@gmail.com",
     "location": "Adenike, Ogbomoso",
     "contactNumber": "09065723484",
@@ -14,7 +14,7 @@
   {
     "id": 2,
     "name": "Satify Foods",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBl9Gz3-XmXzEj-Zdf0I-0RSMWOFDOWURNug&s",
     "email": "satify@yahoo.com",
     "location": "Under G, Ogbomoso",
     "contactNumber": "09065723484",
@@ -26,7 +26,7 @@
   {
     "id": 3,
     "name": "Cephas Tech Hub",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyvG-aHrRKOLYJ-ZVtWoU4T0vD0N9AR--AUQ&s",
     "email": "cephas.hub@cephas.com",
     "location": "Opposite LAUTECH, Ogbomoso",
     "contactNumber": "08034253646",
@@ -38,7 +38,7 @@
   {
     "id": 4,
     "name": "Deekay Fashion House",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuBhpcRcL1WaXtFxpj0_IpFx86-1uMJbS9Cg&s",
     "email": "deekay@gmail.com",
     "location": "Sabo, Ogbomosho",
     "contactNumber": "08036727341",
@@ -50,7 +50,7 @@
   {
     "id": 5,
     "name": "Green Earth Pharmacy",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsQJpWAlxlKxD_1emCF0vEYHgaM7pSLKJWxQ&s",
     "email": "green@gmail.com",
     "location": "Opposite LAUTECH, Ogbomoso",
     "contactNumber": "080436782834",
@@ -62,7 +62,7 @@
   {
     "id": 6,
     "name": "John Stevens Fitness Club",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn7ZUaaqJstf3ajp9THzXMIZFix_yhuv7NWQ&s",
     "email": "john.stevens@outlook.com",
     "location": "Khaki, Ogbomoso",
     "contactNumber": "091742356423",
@@ -74,7 +74,7 @@
   {
     "id": 7,
     "name": "Ope Laundry Services",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBfsWxO9Gs0ZAdPwJyIUDaIcUE5-xgX29-iQ&s",
     "email": "ope234@outlook.com",
     "location": "Stadium, Ogbomoso",
     "contactNumber": "09065723484",
@@ -86,7 +86,7 @@
   {
     "id": 8,
     "name": "LPT Tech Academy",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://static.wixstatic.com/media/8d66da_791f619248c141528c30cab0811669a4~mv2.png/v1/fit/w_2500,h_1330,al_c/8d66da_791f619248c141528c30cab0811669a4~mv2.png",
     "email": "academy@lpt.com",
     "location": "Opposite LAUTECH, Ogbomoso",
     "contactNumber": "08034253646",
@@ -97,20 +97,20 @@
   },
   {
     "id": 9,
-    "name": "Ogbomoso Bookstore",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "name": "Scholars Bookstore",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyvG-aHrRKOLYJ-ZVtWoU4T0vD0N9AR--AUQ&s",
     "email": "books@bookstore.co",
     "location": "Adenike, Ogbomoso",
     "contactNumber": "09065723484",
     "website": "https://www.ogbomosobookstore.com",
     "openingHours": "Monday - Friday: 8am - 6pm",
-    "description": "Ogbomoso Bookstore is a leading bookstore in Ogbomoso that offers a wide selection of books, stationery, and educational materials. Whether you're looking for textbooks, novels, or office supplies, we have everything you need to fuel your passion for reading and learning.",
+    "description": "Scholars Bookstore is the leading bookstore in Ogbomoso that offers a wide selection of books, stationery, and educational materials. Whether you're looking for textbooks, novels, or office supplies, we have everything you need to fuel your passion for reading and learning.",
     "category": ["Books"]
   },
   {
     "id": 10,
     "name": "Olu Seun Manicure and Pedicure",
-    "image": "https://www.thespruceeats.com/thmb/1Q6J9Q6Z",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKnzyJMZzm-afpc01ZHBfxGJk8smdq6uexDw&s",
     "email": "olu@yahoo.com",
     "location": "Opposite LAUTECH, Ogbomoso",
     "contactNumber": "08034253646",
