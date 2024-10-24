@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import {Server} from 'socket.io';
 import {connect} from 'mongoose';
+import {formatError} from '@utils/format';
 import socketAuthentication from '@middlewares/socket.auth.middleware';
 import Chat from '@schemas/chat.schema';
 import Message from '@schemas/message.schema';
 import User from '@schemas/user.schema';
 import Room from '@schemas/room.schema';
-import {formatError} from '@utils/format';
 import Activity from '@models/activity.model';
 
 const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';

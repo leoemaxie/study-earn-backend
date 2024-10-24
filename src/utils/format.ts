@@ -45,8 +45,8 @@ export function transformFields(role: string, data: Record<string, any>) {
 
 export function formatError(error: MongooseError) {
   if (error instanceof MongooseError.ValidationError) {
-    let errors = Object.values(error.errors);
-    let length = errors.length;
+    const errors = Object.values(error.errors);
+    const length = errors.length;
     return {
       error: {
         name: 'validationError',
