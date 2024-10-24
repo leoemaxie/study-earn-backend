@@ -173,7 +173,6 @@ export default class User extends Model<
   @BeforeSave
   static async hashPasswordHook(instance: User) {
     if (instance.changed('password')) {
-      console.log(instance.password);
       instance.password = await hashPassword(instance.password);
     }
   }
