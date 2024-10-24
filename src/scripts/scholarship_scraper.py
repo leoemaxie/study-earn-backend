@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from unicodedata import category
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -7,7 +8,7 @@ import re
 import html
 import os
 
-base_url = os.getenv('BASE_URL', 'https://www.scholarship.com')
+base_url = os.getenv('BASE_URL', 'https://www.scholarshipair.com')
 
 def clean_json_ld(json_ld_string):
     # Remove control characters and other unwanted characters
@@ -23,17 +24,11 @@ def sanitize_description(description):
     soup = BeautifulSoup(description, 'html.parser')
     return soup.get_text(separator=' ', strip=True)
 
-def extract_apply_link_and_deadline(description):
+def extract_details(description):
     # Unescape HTML entities
     description = html.unescape(description)
     # Parse the description with BeautifulSoup
     soup = BeautifulSoup(description, 'html.parser')
-    
-    # Extract apply link
-    apply_link_tag = soup.find('a', href=True, string=re.compile(r'apply', re.I))
-    if not apply_link_tag:
-        apply_link_tag = soup.find('a', href=True, string=re.compile(r'Interested and qualified', re.I))
-    apply_link = apply_link_tag['href'] if apply_link_tag else 'No apply link available'
     
     # Extract application deadline
     deadline_tag = soup.find('h2', string=re.compile(r'Application Deadline', re.I))
@@ -42,7 +37,17 @@ def extract_apply_link_and_deadline(description):
         application_deadline = deadline_date_tag.get_text(strip=True) if deadline_date_tag else 'No deadline available'
     else:
         application_deadline = 'No deadline available'
-    return apply_link, application_deadline
+
+    # Extract apply link
+    apply_link_tag = deadline_tag.find_next('a')
+    apply_link = apply_link_tag['href'] if apply_link_tag else 'No apply link available'
+
+    # Extract category
+    category_tag = soup.find('td').find_next('a')
+    print(category_tag)
+    category = [category_tag.get_text(strip=True) if category_tag else "Scholarship"]
+
+    return apply_link, application_deadline, category
 
 def get_scholarship_details(link):
     try:
@@ -61,7 +66,7 @@ def get_scholarship_details(link):
             date_published = json_ld_data.get('datePublished', 'No date published available')
             articleBody = json_ld_data.get('articleBody', 'No description available')
             description = sanitize_description(articleBody.split('div')[0])
-            apply_link, application_deadline = extract_apply_link_and_deadline(articleBody)
+            apply_link, application_deadline, category = extract_details(articleBody)
         
         return {
             'title': title,
@@ -69,7 +74,8 @@ def get_scholarship_details(link):
             'datePublished': date_published,
             'url': url,
             'applyLink': apply_link,
-            'applicationDeadline': application_deadline
+            'applicationDeadline': application_deadline,
+            'category': category
         }
     except (TypeError, json.JSONDecodeError) as e:
         print(f"Error fetching details for {link}: {e}")
@@ -103,7 +109,7 @@ def scrape_scholarships():
 def main():
     scholarships = scrape_scholarships()
     if scholarships:
-        with open('../data/scholarships.json', 'w') as f:
+        with open('scholarships.json', 'w') as f:
             json.dump(scholarships, f, indent=2)
     else:
         print("No scholarships found.")

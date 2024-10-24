@@ -11,6 +11,7 @@ router.get('/profile', userController.getUserData);
 router.patch('', userController.updateUserData);
 router.delete('', userController.deleteUser);
 router.get('/users', userController.getUsers);
+router.post('/notification', userController.sendNotification);
 router.use('/file', fileRoute);
 router.use('/payment/method', paymentRoute);
 router.get('/payment/redeem', paymentController.redeemPoints);

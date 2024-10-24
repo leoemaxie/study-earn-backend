@@ -4,7 +4,7 @@ import 'dotenv/config';
 export async function sendNotification(content: {
   title: string;
   body: string;
-}): Promise<void> {
+}): Promise<Boolean> {
   try {
     const serviceAccount = require(
       process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH as string
@@ -32,7 +32,9 @@ export async function sendNotification(content: {
     };
     const response = await admin.messaging().sendEachForMulticast(message);
     console.log('Multicast notification sent:', response);
+    return true;
   } catch (error) {
     console.error('Error sending multicast notification:', error);
+    return false;
   }
 }

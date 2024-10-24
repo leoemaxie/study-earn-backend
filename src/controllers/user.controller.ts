@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {BadRequest} from '@utils/error';
+import {BadRequest, ServerError} from '@utils/error';
 import {del} from '@services/user.file.service';
 import {formatUser} from '@utils/format';
 import {computeMetadata} from '@utils/pagination';
@@ -109,7 +109,14 @@ export async function getUsers(
 
     const users = await User.findAndCountAll({
       ...queryOptions,
-      attributes: ['firstName', 'lastName', 'phoneNumber', 'email', 'role', 'department'],
+      attributes: [
+        'firstName',
+        'lastName',
+        'phoneNumber',
+        'email',
+        'role',
+        'department',
+      ],
     });
 
     return res.status(200).json({
@@ -133,11 +140,11 @@ export async function sendNotification(
 ) {
   try {
     const {title, body} = req.body;
-
-    await sns.sendNotification({
+    const sent = await sns.sendNotification({
       title,
       body,
     });
+    if (!sent) return next(new ServerError('Failed to send notification'));
     return res.sendStatus(204);
   } catch (error) {
     return next(error);
