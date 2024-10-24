@@ -1,5 +1,11 @@
 import 'dotenv/config';
-import {Conflict, Forbidden, NotFound, Unauthorized} from '@utils/error';
+import {
+  BadRequest,
+  Conflict,
+  Forbidden,
+  NotFound,
+  Unauthorized,
+} from '@utils/error';
 import {totp} from 'otplib';
 import {sendEmail} from './email.service';
 import User from '@models/user.model';
@@ -13,7 +19,7 @@ const generateOTP = (email: string) => {
   let otp = totp.generate(secret);
 
   if (totp.timeRemaining() <= 10) {
-    let newTotp = totp.create(totp.allOptions());
+    const newTotp = totp.create(totp.allOptions());
     newTotp.options = {step: 60};
     otp = newTotp.generate(secret);
   }
@@ -57,12 +63,23 @@ const sendOTP = async (email: string) => {
 };
 
 const resetPassword = async (otp: string, email: string, password: string) => {
-  // if (!verifyOTP(email, otp)) throw new Unauthorized('Invalid OTP');
+  if (!verifyOTP(email, otp)) throw new Unauthorized('Invalid OTP');
 
+  const match =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+      password
+    );
+
+  if (!match) {
+    throw new BadRequest(
+      'Password must be at least 8 characters, must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+      'ValidationError'
+    );
+  }
   const user = await User.findOne({where: {email}});
   if (!user) throw new NotFound('User not found');
 
-  await user.update({password});
+  await user.update({password}, {validate: false});
   await Activity.create({
     userId: user.id,
     type: 'password',

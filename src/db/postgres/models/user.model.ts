@@ -14,7 +14,7 @@ import {
   PrimaryKey,
   HasMany,
   Table,
-  AfterValidate,
+  BeforeSave,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
@@ -37,7 +37,7 @@ export default class User extends Model<
     allowNull: false,
     validate: {
       is: {
-        args: /^[a-z]+@(student)?.lautech.edu.ng$/,
+        args: /^[a-z]+@(student\.)?lautech.edu.ng$/,
         msg: 'Invalid school email address',
       },
     },
@@ -170,12 +170,11 @@ export default class User extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  @AfterValidate
+  @BeforeSave
   static async hashPasswordHook(instance: User) {
-    console.log(instance.changed('password'));
     if (instance.changed('password')) {
+      console.log(instance.password);
       instance.password = await hashPassword(instance.password);
     }
-    console.log(instance.password);
   }
 }
