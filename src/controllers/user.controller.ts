@@ -87,6 +87,7 @@ export async function getUsers(
       offset = 0,
       role,
       department,
+      id,
       faculty,
       order,
     } = req.query;
@@ -102,12 +103,13 @@ export async function getUsers(
     };
 
     if (faculty) queryOptions.where.facultyId = String(faculty);
+    if (id) queryOptions.where.id = String(id);
     if (department) queryOptions.where.department = String(department);
     if (role) queryOptions.where.role = String(role);
 
     const users = await User.findAndCountAll({
       ...queryOptions,
-      attributes: ['firstName', 'lastName', 'phoneNumber', 'email'],
+      attributes: ['firstName', 'lastName', 'phoneNumber', 'email', 'role', 'department'],
     });
 
     return res.status(200).json({

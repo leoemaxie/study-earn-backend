@@ -4,6 +4,8 @@ import {
   InferAttributes,
   NonAttribute,
   InferCreationAttributes,
+  CreationOptional,
+  sql,
 } from '@sequelize/core';
 import {
   Attribute,
@@ -11,6 +13,7 @@ import {
   BelongsTo,
   Table,
   PrimaryKey,
+  Default,
 } from '@sequelize/core/decorators-legacy';
 import User from './user.model';
 
@@ -20,13 +23,19 @@ export default class Staff extends Model<
   InferCreationAttributes<Staff>
 > {
   @Attribute(DataTypes.UUID)
+  @Default(sql.uuidV4)
   @PrimaryKey
-  @NotNull
   declare id: string;
 
   @Attribute(DataTypes.UUID)
   @NotNull
   declare userId: string;
+
+  @Attribute(DataTypes.STRING)
+  declare position: CreationOptional<string>;
+
+  @Attribute(DataTypes.STRING)
+  declare directorate: CreationOptional<string>;
 
   @BelongsTo(() => User, {
     foreignKey: 'userId',

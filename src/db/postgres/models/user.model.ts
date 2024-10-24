@@ -114,7 +114,7 @@ export default class User extends Model<
     },
     validate: {
       is: {
-        args: /^(\+234|0)[789]\d{9}$/,
+        args: /^(\+234|0)[789](0|1)\d{8}$/,
         msg: 'Invalid phone number provided',
       },
     },
