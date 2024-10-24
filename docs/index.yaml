@@ -14,7 +14,4 @@ paths:
   $ref: 'paths.yaml'
 
 components:
-  $ref: './components.yaml'
-
-security:
-  - BearerAuth: []
+  $ref: 'components.yaml'

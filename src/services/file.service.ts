@@ -21,7 +21,7 @@ const download = async (
   }
 
   const file = [
-    name && options.semester ? `${name}-` : '',
+    name ? `${name}-` : name,
     options.session
       ? `${options.session}${type === 'calendar' ? `-${Number(options.session) - 1999}` : ''}${options.semester ? `-${options.semester}` : ''}`
       : '',

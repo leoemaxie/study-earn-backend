@@ -30,8 +30,11 @@ export async function updateUserData(
     const customFields = CUSTOM_FIELDS[role];
     const userData = {};
     const roleData = {};
+    const keys = Object.keys(req.body);
 
-    Object.keys(req.body).forEach(key => {
+    if (keys.length === 0) throw new BadRequest('No fields provided');
+
+    keys.forEach(key => {
       if (!fields.includes(key)) {
         throw new BadRequest('Invalid field');
       }

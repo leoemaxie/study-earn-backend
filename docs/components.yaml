@@ -122,7 +122,7 @@ schemas:
         type: string
         format: date-time
 
-  UpdateUserRequest:
+  BaseUserRequest:
     type: object
     properties:
       firstName:
@@ -133,11 +133,42 @@ schemas:
         type: string
       department:
         type: string
-    required:
-      - firstName
-      - lastName
-      - phoneNumber
-      - department
+      gps:
+        type: string
+      dob:
+        type: string
+        format: date-time
+
+  StudentRequest:
+    allOf:
+      - $ref: '#/components/schemas/BaseUserRequest'
+      - type: object
+        properties:
+          matricNo:
+            type: string
+          units:
+            type: integer
+          cgpa:
+            type: number
+          semester:
+            type: integer
+          level:
+            type: string
+
+  StaffRequest:
+    allOf:
+      - $ref: '#/components/schemas/BaseUserRequest'
+      - type: object
+        properties:
+          directorate:
+            type: string
+          position:
+            type: string
+
+  UpdateUserRequest:
+    oneOf:
+      - $ref: '#/components/schemas/StudentRequest'
+      - $ref: '#/components/schemas/StaffRequest'
 
   RegisterRequest:
     type: object
@@ -166,7 +197,8 @@ schemas:
       - lastName
       - department
       - phoneNumber
-    Course:
+
+  Course:
     type: object
     properties:
       id:
@@ -275,6 +307,34 @@ schemas:
           url:
             type: string
 
+  Activity:
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      type:
+        type: string
+      metadata:
+        type: object
+        properties:
+          status:
+            type: string
+          points:
+            type: number
+      createdAt:
+        type: string
+        format: date-time
+
+  ActivityListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Activity'
+
   Scholarship:
     type: object
     properties:
@@ -291,6 +351,10 @@ schemas:
         type: string
       applicationDeadline:
         type: string
+      category:
+        type: array
+        items:
+          type: string
 
   ScholarshipListResponse:
     type: object
@@ -299,6 +363,107 @@ schemas:
         type: array
         items:
           $ref: '#/components/schemas/Scholarship'
+
+  Announcement:
+    type: object
+    properties:
+      title:
+        type: string
+      content:
+        type: string
+      by:
+        type: string
+      date:
+        type: string
+        format: date-time
+      priority:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+
+  AnnouncementListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Announcement'
+
+  Business:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      image:
+        type: string
+      email:
+        type: string
+        format: email
+      location:
+        type: string
+      contactNumber:
+        type: string
+      website:
+        type: string
+      openingHours:
+        type: string
+      description:
+        type: string
+      category:
+        type: array
+        items:
+          type: string
+
+  BusinessListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Business'
+
+  Event:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      image:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+        format: date-time
+      location:
+        type: string
+      category:
+        type: array
+        items:
+          type: string
+
+  EventListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/components/schemas/Event'
+
+  NotificationRequest:
+    type: object
+    properties:
+      title:
+        type: string
+      body:
+        type: string
+      gps:
+        type: string
 
   UpdatePointsRequest:
     type: object
@@ -309,10 +474,20 @@ schemas:
         type: number
       units:
         type: number
+      course:
+        type: string
     required:
       - minutes
       - score
       - units
+
+  EnrollCourseRequest:
+    type: object
+    properties:
+      course:
+        type: string
+    required:
+      - course
 
   PointsResponse:
     type: object

@@ -4,13 +4,15 @@ const USER_FIELDS = [
   'dob',
   'phoneNumber',
   'department',
+  'gps',
 ];
 
 export const STUDENT_FIELDS = ['matricNo', 'cgpa', 'level', 'semester'];
+export const STAFF_FIELDS = ['position', 'directorate'];
 
 const ALLOWED_FIELDS = {
-  staff: USER_FIELDS,
   admin: USER_FIELDS,
+  staff: [...STAFF_FIELDS, ...USER_FIELDS],
   student: [...STUDENT_FIELDS, ...USER_FIELDS],
 };
 

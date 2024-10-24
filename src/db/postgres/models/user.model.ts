@@ -165,7 +165,7 @@ export default class User extends Model<
   declare lastLogin: CreationOptional<Date>;
 
   @Attribute(DataTypes.STRING)
-  declare gpsLocation: CreationOptional<string>;
+  declare gps: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

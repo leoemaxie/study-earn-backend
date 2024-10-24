@@ -4,13 +4,13 @@ import scholarships from '@data/scholarship.json';
 import Student from '@models/student.model';
 import Activity from '@models/activity.model';
 
-export async function updatePoints(
+export async function completeCourse(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const {minutes, score, units} = req.body;
+    const {minutes, score, units, course} = req.body;
     const {id} = req.user;
     let points = req.user['student.points'];
 
@@ -36,13 +36,35 @@ export async function updatePoints(
         {
           userId: id,
           type: 'study',
-          description: 'You have completed a course',
+          description: `You have completed a course on ${course}`,
           metadata: {score, minutes, units},
         },
         {transaction: t}
       );
     });
     res.status(200).json({data: {points}});
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function enrollCourse(req: Request, res: Response, next: NextFunction) {
+  try {
+    const {course} = req.body;
+    const {id} = req.user;
+
+    if (!course) {
+      throw new BadRequest('Invalid fields');
+    }
+
+    Activity.create({
+      userId: id,
+      type: 'enroll',
+      description: `You have enrolled in a course on ${course}`,
+      metadata: {course},
+    });
+
+    res.status(200).json({message: 'Course enrolled'});
   } catch (error) {
     next(error);
   }

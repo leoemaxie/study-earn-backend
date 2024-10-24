@@ -14,6 +14,7 @@ router.use((req, res, next) => {
 
 router.get('/study/download/:type/:name', downloadFile);
 router.get('/scholarships', studentController.getScholarship);
-router.post('/points', studentController.updatePoints);
+router.post('/courses/enroll', studentController.enrollCourse);
+router.post('/study/complete', studentController.completeCourse);
 
 export default router;

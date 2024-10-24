@@ -261,6 +261,44 @@
       '500':
         $ref: '#/components/responses/ServerError'
 
+/api/v1/user/notification:
+  post:
+    summary: Send a notification
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationRequest'
+    responses:
+      '200':
+        description: Notification sent successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      '400':
+        description: Invalid request data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
 /api/v1/user/file/upload/{type}:
   post:
     summary: Upload a file
@@ -372,6 +410,71 @@
       '500':
         $ref: '#/components/responses/ServerError'
 
+/api/v1/user/activity/{id}:
+  get:
+    summary: Get user activity
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: User activity retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Activity not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+  delete:
+    summary: Delete user activity
+    tags:
+      - User
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '204':
+        description: User activity deleted successfully
+      '401':
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Activity not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
 /api/v1/school/departments:
   get:
     summary: Get list of departments
@@ -475,6 +578,114 @@
       '500':
         $ref: '#/components/responses/ServerError'
 
+/api/v1/data/business:
+  get:
+    summary: Get list of businesses
+    tags:
+      - Data
+    parameters:
+      - name: limit
+        in: query
+        description: Number of businesses to return
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        description: Number of businesses to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+    responses:
+      '200':
+        description: List of businesses retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/data/events:
+  get:
+    summary: Get list of events
+    tags:
+      - Data
+    parameters:
+      - name: limit
+        in: query
+        description: Number of events to return
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        description: Number of events to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+    responses:
+      '200':
+        description: List of events retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/data/announcement:
+  get:
+    summary: Get list of announcements
+    tags:
+      - Data
+    parameters:
+      - name: limit
+        in: query
+        description: Number of announcements to return
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        description: Number of announcements to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+    responses:
+      '200':
+        description: List of announcements retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementListResponse'
+      '400':
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
 /api/v1/student/scholarships:
   get:
     summary: Get list of scholarships
@@ -533,9 +744,9 @@
       '500':
         $ref: '#/components/responses/ServerError'
 
-/api/v1/student/points:
+/api/v1/student/study/complete:
   post:
-    summary: Update student points
+    summary: Completes a course
     tags:
       - Student
     security:
@@ -553,6 +764,37 @@
           application/json:
             schema:
               $ref: '#/components/schemas/PointsResponse'
+      '400':
+        description: Invalid request data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '403':
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '500':
+        $ref: '#/components/responses/ServerError'
+
+/api/v1/student/courses/enroll:
+  post:
+    summary: Enroll in a course
+    tags:
+      - Student
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EnrollCourseRequest'
+    responses:
+      '201':
+        description: Course enrolled successfully
       '400':
         description: Invalid request data
         content:
