@@ -9,7 +9,7 @@ export async function getActivities(
   next: NextFunction
 ) {
   try {
-    const {limit = 50, offset = 0, type = ''} = req.query;
+    const {limit = 50, offset = 0, type, page} = req.query;
     const queryOptions: any = {
       limit: Number(limit),
       offset: Number(offset),
@@ -20,6 +20,7 @@ export async function getActivities(
     };
 
     queryOptions.where.userId = req.user.id;
+    if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (type) queryOptions.where.type = type;
 
     const {rows, count} = await Activity.findAndCountAll(queryOptions);

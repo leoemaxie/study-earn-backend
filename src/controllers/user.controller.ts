@@ -93,6 +93,7 @@ export async function getUsers(
       id,
       faculty,
       order,
+      page,
     } = req.query;
     const queryOptions: any = {
       limit: Number(limit),
@@ -106,6 +107,7 @@ export async function getUsers(
     };
 
     if (faculty) queryOptions.where.facultyId = String(faculty);
+    if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (id) queryOptions.where.id = String(id);
     if (department) queryOptions.where.department = String(department);
     if (role) queryOptions.where.role = String(role);

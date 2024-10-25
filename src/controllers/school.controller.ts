@@ -3,6 +3,8 @@ import {download} from '@services/file.service';
 import {computeMetadata} from '@utils/pagination';
 import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
+import {where} from 'sequelize';
+import Sequelize from '@sequelize/core';
 
 export async function getDepartments(
   req: Request,
@@ -10,15 +12,26 @@ export async function getDepartments(
   next: NextFunction
 ) {
   try {
-    const {limit = 20, offset = 0, faculty} = req.query;
-    const queryOptions = {
+    let {limit = 50, offset = 0, faculty, page} = req.query;
+
+    if (page) {
+      offset = (Number(page) - 1) * Number(limit);
+    }
+
+    const departments = await Department.findAndCountAll({
       limit: Number(limit),
       offset: Number(offset),
       raw: true,
-      ...(faculty && {where: {facultyId: String(faculty)}}),
-    };
-
-    const departments = await Department.findAndCountAll(queryOptions);
+      include: [
+        {
+          model: Faculty,
+          as: 'faculty',
+          attributes: [['name', 'faculty']],
+          ...(faculty && {where: {name: String(faculty)}}),
+        },
+      ],
+      order: [['name', 'ASC']],
+    });
 
     return res.status(200).json({
       metadata: computeMetadata(

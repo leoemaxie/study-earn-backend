@@ -1,5 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import {BadRequest} from '@utils/error';
+import {computeMetadata} from '@utils/pagination';
 import scholarships from '@data/scholarship.json';
 import Student from '@models/student.model';
 import Activity from '@models/activity.model';
@@ -70,6 +71,32 @@ export function enrollCourse(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export function getScholarship(req: Request, res: Response) {
-  return res.status(200).json({data: scholarships});
+export function getScholarship(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    let {limit = 50, offset = 0, page} = req.query;
+
+    if (page) {
+      offset = (Number(page) - 1) * Number(limit);
+    }
+
+    const data = scholarships.slice(
+      Number(offset),
+      Number(offset) + Number(limit)
+    );
+    return res.status(200).json({
+      metadata: computeMetadata(
+        req,
+        scholarships.length,
+        Number(limit),
+        Number(offset)
+      ),
+      data,
+    });
+  } catch (error: unknown) {
+    return next(error);
+  }
 }
