@@ -11,19 +11,19 @@ export function computeMetadata(
   const totalPages = Math.ceil(total / limit);
   return {
     currentPage,
+    totalPages,
     itemsPerPage: limit,
     totalItems: total,
-    totalPages,
     links: {
       self: `${url}?page=${currentPage}&limit=${limit}`,
       first: `${url}?page=1&limit=${limit}`,
-      last: `${url}?page=${totalPages}&limit=${limit}`,
       ...(currentPage > 1 && {
         prev: `${url}?page=${currentPage - 1}&limit=${limit}`,
       }),
       ...(currentPage < totalPages && {
         next: `${url}?page=${currentPage + 1}&limit=${limit}`,
       }),
+      last: `${url}?page=${totalPages}&limit=${limit}`,
     },
   };
 }

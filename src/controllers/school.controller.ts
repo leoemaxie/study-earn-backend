@@ -25,8 +25,7 @@ export async function getDepartments(
       include: [
         {
           model: Faculty,
-          as: 'faculty',
-          attributes: [['name', 'faculty']],
+          attributes: ['name'],
           ...(faculty && {where: {name: String(faculty)}}),
         },
       ],

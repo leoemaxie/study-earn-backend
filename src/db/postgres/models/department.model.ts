@@ -48,10 +48,6 @@ export default class Department extends Model<
   })
   declare name: string;
 
-  @Attribute(DataTypes.UUID)
-  @NotNull
-  declare facultyId: string;
-
   @Attribute({
     type: DataTypes.STRING(10),
     allowNull: false,
@@ -70,11 +66,15 @@ export default class Department extends Model<
   })
   declare code: string;
 
-  @Attribute(DataTypes.TEXT)
-  declare description: CreationOptional<string>;
+  @Attribute(DataTypes.UUID)
+  @NotNull
+  declare facultyId: string;
 
   @BelongsTo(() => Faculty, 'facultyId')
   declare faculty?: NonAttribute<Faculty>;
+
+  @Attribute(DataTypes.TEXT)
+  declare description: CreationOptional<string>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
