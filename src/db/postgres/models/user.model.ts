@@ -20,6 +20,7 @@ import {Role} from './enum';
 import {hashPassword} from '@utils/password';
 import Payment from './payment.model';
 import PaymentMethod from './paymentMethod.model';
+import Course from './course.model';
 
 @Table({tableName: 'users'})
 export default class User extends Model<

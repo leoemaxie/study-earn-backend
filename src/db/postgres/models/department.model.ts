@@ -14,8 +14,10 @@ import {
   Table,
   PrimaryKey,
   BelongsTo,
+  HasMany,
 } from '@sequelize/core/decorators-legacy';
 import Faculty from './faculty.model';
+import Course from './course.model';
 
 @Table({tableName: 'department'})
 export default class Department extends Model<
@@ -72,6 +74,9 @@ export default class Department extends Model<
 
   @BelongsTo(() => Faculty, 'facultyId')
   declare faculty?: NonAttribute<Faculty>;
+
+  @HasMany(() => Course, 'departmentId')
+  declare courses?: NonAttribute<Course[]>;
 
   @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;

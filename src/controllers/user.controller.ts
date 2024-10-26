@@ -162,15 +162,28 @@ export async function getCourses(
   next: NextFunction
 ) {
   try {
+    const {department, semester, level} = req.query;
     const courses = await Course.findAll({
       include: [
         {
           model: Department,
-          where: {name: req.user.department},
+          where: {
+            name: department ? department : req.user.department,
+            ...(semester && {semester}),
+            ...(level && {level}),
+          },
           attributes: [],
         },
       ],
-      attributes: ['id', 'name', 'code', 'unit', 'description'],
+      attributes: [
+        'id',
+        'name',
+        'code',
+        'unit',
+        'semester',
+        'level',
+        'description',
+      ],
       raw: true,
     });
 

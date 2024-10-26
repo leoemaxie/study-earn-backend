@@ -70,9 +70,23 @@ export default class Course extends Model<
   @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;
 
+  @Attribute(DataTypes.ENUM('100', '200', '300', '400', '500'))
+  declare level: CreationOptional<string>;
+
   @Attribute(DataTypes.INTEGER)
   @NotNull
   declare unit: number;
+
+  @Attribute({
+    type: DataTypes.INTEGER,
+    validate: {
+      isIn: {
+        args: [[1, 2]],
+        msg: 'Semester must be either 1 or 2',
+      },
+    },
+  })
+  declare semester: CreationOptional<number>;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

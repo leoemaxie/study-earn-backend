@@ -394,6 +394,25 @@
       - User
     security:
       - BearerAuth: []
+    parameters:
+      - name: department
+        in: query
+        description: Filter courses by department
+        required: false
+        schema:
+          type: string
+      - name: semester
+        in: query
+        description: Filter courses by semester
+        required: false
+        schema:
+          type: string
+      - name: level
+        in: query
+        description: Filter courses by level
+        required: false
+        schema:
+          type: string
     responses:
       '200':
         description: List of courses retrieved successfully
@@ -662,10 +681,17 @@
         required: false
         schema:
           type: integer
-          default: 20
+          default: 50
       - name: offset
         in: query
         description: Number of announcements to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+      - name: page
+        in: query
+        description: Page number
         required: false
         schema:
           type: integer

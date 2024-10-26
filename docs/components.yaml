@@ -111,10 +111,20 @@ schemas:
         type: string
       phoneNumber:
         type: string
+      picture:
+        type: string
       department:
         type: string
       role:
         type: string
+        enum:
+            - staff 
+            - admin
+            - student
+      isVerified:
+        type: boolean
+      gps:
+        type: string 
       createdAt:
         type: string
         format: date-time
@@ -181,6 +191,10 @@ schemas:
         format: password
       role:
         type: string
+        enum:
+            - student
+            - staff
+            - admin
       firstName:
         type: string
       lastName:
@@ -209,6 +223,10 @@ schemas:
         type: string
       unit:
         type: integer
+      semester:
+        type: integer
+      level:
+        type: string
       description:
         type: string
 
@@ -227,9 +245,9 @@ schemas:
         type: string
       name:
         type: string
-      facultyId:
-        type: string
       code:
+        type: string
+      facultyId:
         type: string
       description:
         type: string
@@ -239,6 +257,8 @@ schemas:
       updatedAt:
         type: string
         format: date-time
+      faculty.name:
+        type: string
 
   Faculty:
     type: object
@@ -246,10 +266,6 @@ schemas:
       id:
         type: string
       name:
-        type: string
-      code:
-        type: string
-      description:
         type: string
       createdAt:
         type: string
