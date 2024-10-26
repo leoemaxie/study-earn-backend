@@ -1,6 +1,8 @@
 import {Request, Response, NextFunction} from 'express';
 import {computeMetadata} from '@utils/pagination';
 import {NotFound} from '@utils/error';
+import {validateQuery} from '@utils/query';
+import {DEFAULT_QUERY_FIELDS} from '@utils/fields';
 import Activity from '@models/activity.model';
 
 export async function getActivities(
@@ -10,6 +12,7 @@ export async function getActivities(
 ) {
   try {
     const {limit = 50, offset = 0, type, page} = req.query;
+    const {id} = req.params;
     const queryOptions: any = {
       limit: Number(limit),
       offset: Number(offset),
@@ -19,6 +22,18 @@ export async function getActivities(
       attributes: {exclude: ['userId']},
     };
 
+    if (id) {
+      const activity = await Activity.findOne({
+        where: {id: Number(id), userId: req.user.id},
+      });
+      if (!activity) throw new NotFound('Activity not found');
+      return res.status(200).json(activity);
+    }
+
+    validateQuery(req, {
+      ...DEFAULT_QUERY_FIELDS,
+      type: 'string',
+    });
     queryOptions.where.userId = req.user.id;
     if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (type) queryOptions.where.type = type;
@@ -38,9 +53,14 @@ export async function deleteActivity(
   next: NextFunction
 ) {
   try {
-    const {id} = req.query;
-    const {id: userId} = req.user;
-    const activity = await Activity.findOne({where: {id: Number(id), userId}});
+    const {id} = req.params;
+
+    if (!id) {
+      await Activity.destroy({where: {userId: req.user.id}});
+      return res.status(204).end();
+    }
+
+    const activity = await Activity.findOne({where: {id: Number(id)}});
 
     if (!activity) {
       throw new NotFound('Activity not found');

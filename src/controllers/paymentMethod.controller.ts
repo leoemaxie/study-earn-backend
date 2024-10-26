@@ -41,7 +41,7 @@ export async function getPaymentMethod(
   next: NextFunction
 ) {
   try {
-    const {id} = req.query;
+    const {id} = req.params;
     let paymentMethod;
 
     if (!id) {
@@ -69,7 +69,7 @@ export async function updatePaymentMethod(
   next: NextFunction
 ) {
   try {
-    const {id} = req.query;
+    const {id} = req.params;
 
     if (!id) {
       throw new BadRequest('Payment method ID is required');
@@ -94,7 +94,7 @@ export async function deletePaymentMethod(
   next: NextFunction
 ) {
   try {
-    const {id} = req.query;
+    const {id} = req.params;
 
     if (!id) {
       throw new BadRequest('Payment method ID is required');

@@ -9,6 +9,7 @@ import User from '@models/user.model';
 import Course from '@models/course.model';
 import * as sns from '@services/notification.service';
 import Department from '@models/department.model';
+import {validateQuery} from '@utils/query';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -106,6 +107,17 @@ export async function getUsers(
           : [['department', 'DESC']],
     };
 
+    validateQuery(req, {
+      limit: 'number',
+      offset: 'number',
+      role: 'string',
+      department: 'string',
+      id: 'number',
+      faculty: 'number',
+      order: 'string',
+      page: 'number',
+    });
+
     if (faculty) queryOptions.where.facultyId = String(faculty);
     if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (id) queryOptions.where.id = String(id);
@@ -163,26 +175,25 @@ export async function getCourses(
 ) {
   try {
     const {department, semester, level} = req.query;
+
+    validateQuery(req, {
+      department: 'string',
+      semester: 'string',
+      level: 'string',
+    });
     const courses = await Course.findAll({
+      where: {
+        ...(semester && {semester: String(semester)}),
+        ...(level && {level: String(level)}),
+      },
       include: [
         {
           model: Department,
           where: {
             name: department ? department : req.user.department,
-            ...(semester && {semester}),
-            ...(level && {level}),
           },
           attributes: [],
         },
-      ],
-      attributes: [
-        'id',
-        'name',
-        'code',
-        'unit',
-        'semester',
-        'level',
-        'description',
       ],
       raw: true,
     });

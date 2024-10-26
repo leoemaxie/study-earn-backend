@@ -1,3 +1,7 @@
+export interface QueryableFields {
+  [key: string]: 'number' | 'boolean' | 'array' | 'string';
+}
+
 const USER_FIELDS = [
   'firstName',
   'lastName',
@@ -20,6 +24,12 @@ export const CUSTOM_FIELDS = {
   staff: USER_FIELDS,
   admin: USER_FIELDS,
   student: STUDENT_FIELDS,
+};
+
+export const DEFAULT_QUERY_FIELDS: QueryableFields = {
+  limit: 'number',
+  offset: 'number',
+  page: 'number',
 };
 
 export default ALLOWED_FIELDS;

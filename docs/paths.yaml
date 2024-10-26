@@ -431,7 +431,7 @@
 
 /api/v1/user/activity/{id}:
   get:
-    summary: Get user activity
+    summary: Get user activity. If ID is not provided, all activities specified in the query are returned
     tags:
       - User
     security:
@@ -439,9 +439,37 @@
     parameters:
       - name: id
         in: path
-        required: true
+        required: false
         schema:
           type: string
+        description: Activity ID
+      - name: type
+        in: query
+        description: Filter activities by type
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of activities to return
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: offset
+        in: query
+        description: Number of activities to skip
+        required: false
+        schema:
+          type: integer
+          default: 0
+      - name: page
+        in: query
+        description: Page number
+        required: false
+        schema:
+          type: integer
+          default: 0
     responses:
       '200':
         description: User activity retrieved successfully
@@ -465,7 +493,7 @@
         $ref: '#/components/responses/ServerError'
 
   delete:
-    summary: Delete user activity
+    summary: Delete user activity. If ID is not provided, all activities are deleted
     tags:
       - User
     security:
@@ -871,15 +899,16 @@
       '500':
         $ref: '#/components/responses/ServerError'
 
+/api/v1/user/payment/method/{id}:
   get:
-    summary: Get payment methods
+    summary: Get payment methods. If ID is not provided, all payment methods are returned.
     tags:
       - Payment
     security:
       - BearerAuth: []
     parameters:
       - name: id
-        in: query
+        in: path
         description: Payment method ID
         required: false
         schema:
@@ -920,7 +949,7 @@
       - BearerAuth: []
     parameters:
       - name: id
-        in: query
+        in: path
         description: Payment method ID
         required: true
         schema:
@@ -967,7 +996,7 @@
       - BearerAuth: []
     parameters:
       - name: id
-        in: query
+        in: pat
         description: Payment method ID
         required: true
         schema:

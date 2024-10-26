@@ -35,6 +35,7 @@ export default class User extends Model<
   @Attribute({
     type: DataTypes.STRING(255),
     unique: true,
+    index: true,
     allowNull: false,
     validate: {
       is: {

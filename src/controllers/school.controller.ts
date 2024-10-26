@@ -1,10 +1,10 @@
 import {Request, Response, NextFunction} from 'express';
 import {download} from '@services/file.service';
 import {computeMetadata} from '@utils/pagination';
+import {validateQuery} from '@utils/query';
+import {DEFAULT_QUERY_FIELDS} from '@utils/fields';
 import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
-import {where} from 'sequelize';
-import Sequelize from '@sequelize/core';
 
 export async function getDepartments(
   req: Request,
@@ -13,6 +13,11 @@ export async function getDepartments(
 ) {
   try {
     let {limit = 50, offset = 0, faculty, page} = req.query;
+
+    validateQuery(req, {
+      ...DEFAULT_QUERY_FIELDS,
+      faculty: 'string',
+    });
 
     if (page) {
       offset = (Number(page) - 1) * Number(limit);
@@ -73,8 +78,15 @@ export async function getCalendar(
       markdown: markdown === 'true',
       list,
     };
-    const data = await download('calendar', '', query);
-    return res.status(200).json({data: {url: data}});
+
+    validateQuery(req, {
+      semester: 'string',
+      session: 'string',
+      markdown: 'boolean',
+    });
+
+    const url = await download('calendar', '', query);
+    return res.status(200).json({data: {url}});
   } catch (error) {
     return next(error);
   }

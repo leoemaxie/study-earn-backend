@@ -1,12 +1,16 @@
-import {Request, Response, NextFunction} from 'express';
 import business from '@data/business.json';
 import announcement from '@data/announcement.json';
 import events from '@data/events.json';
+import {Request, Response, NextFunction} from 'express';
 import {computeMetadata} from '@utils/pagination';
+import {validateQuery} from '@utils/query';
+import {DEFAULT_QUERY_FIELDS} from '@utils/fields';
 
 export function getBusiness(req: Request, res: Response, next: NextFunction) {
   try {
     let {limit = 50, offset = 0, page} = req.query;
+
+    validateQuery(req, DEFAULT_QUERY_FIELDS);
 
     if (page) {
       offset = (Number(page) - 1) * Number(limit);
@@ -35,6 +39,8 @@ export function getAnnouncement(
   try {
     let {limit = 50, offset = 0, page} = req.query;
 
+    validateQuery(req, DEFAULT_QUERY_FIELDS);
+
     if (page) {
       offset = (Number(page) - 1) * Number(limit);
     }
@@ -60,6 +66,8 @@ export function getAnnouncement(
 export function getEvents(req: Request, res: Response, next: NextFunction) {
   try {
     let {limit = 50, offset = 0, page} = req.query;
+
+    validateQuery(req, DEFAULT_QUERY_FIELDS);
 
     if (page) {
       offset = (Number(page) - 1) * Number(limit);

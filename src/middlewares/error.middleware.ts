@@ -23,7 +23,13 @@ export default async function errorMiddleware(
     }
     return res
       .status(error.status)
-      .json({error: {name: error.name, message: error.message}});
+      .json({
+        error: {
+          name: error.name,
+          message: error.message,
+          ...(error.details && {details: error.details}),
+        },
+      });
   }
 
   if (

@@ -1,9 +1,16 @@
 export default class CustomError extends Error {
   status: number;
-  constructor(message: string, status: number, name?: string) {
+  details?: string[];
+  constructor(
+    message: string,
+    status: number,
+    name?: string,
+    details?: string[]
+  ) {
     super(message);
     this.name = name ? name : this.constructor.name;
     this.status = status;
+    this.details = details;
   }
 }
 
@@ -14,8 +21,8 @@ export class ServerError extends CustomError {
 }
 
 export class BadRequest extends CustomError {
-  constructor(message = 'Bad Request', name?: string) {
-    super(message, 400, name);
+  constructor(message = 'Bad Request', name?: string, details?: string[]) {
+    super(message, 400, name, details);
   }
 }
 

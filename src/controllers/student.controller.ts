@@ -1,9 +1,12 @@
 import {Request, Response, NextFunction} from 'express';
 import {BadRequest} from '@utils/error';
 import {computeMetadata} from '@utils/pagination';
+import { validateQuery } from '@utils/query';
+import { DEFAULT_QUERY_FIELDS } from '@utils/fields';
 import scholarships from '@data/scholarship.json';
 import Student from '@models/student.model';
 import Activity from '@models/activity.model';
+
 
 export async function completeCourse(
   req: Request,
@@ -78,6 +81,8 @@ export function getScholarship(
 ) {
   try {
     let {limit = 50, offset = 0, page} = req.query;
+
+    validateQuery(req, DEFAULT_QUERY_FIELDS);
 
     if (page) {
       offset = (Number(page) - 1) * Number(limit);

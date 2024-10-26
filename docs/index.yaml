@@ -11,7 +11,7 @@ servers:
     description: Production Server
 
 paths:
-  $ref: 'paths.yaml'
+  <<: *paths.yaml
 
 components:
-  $ref: 'components.yaml'
+  <<: *components.yaml
