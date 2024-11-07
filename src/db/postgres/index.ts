@@ -10,7 +10,7 @@ import Staff from '@models/staff.model';
 import Department from '@models/department.model';
 import Faculty from '@models/faculty.model';
 import Payment from '@models/payment.model';
-import PaymentMethod from '@models/paymentMethod.model';
+import PaymentMethod from '@models/payment-method.model';
 import Activity from '@models/activity.model';
 
 export async function initializeDatabase() {

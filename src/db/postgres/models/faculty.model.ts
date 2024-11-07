@@ -47,7 +47,15 @@ export default class Faculty extends Model<
   })
   declare name: string;
 
-  @HasMany(() => Department, 'facultyId')
+  @Attribute(DataTypes.TEXT)
+  declare description: CreationOptional<string>
+
+  @HasMany(() => Department, {
+    foreignKey: {
+      name: 'facultyId',
+      onDelete: 'SET NULL',
+    }
+  })
   declare departments?: NonAttribute<Department[]>;
 
   declare createdAt: CreationOptional<Date>;

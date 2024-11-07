@@ -12,15 +12,18 @@ import {
   NotNull,
   Default,
   PrimaryKey,
+  HasOne,
   HasMany,
   Table,
   BeforeSave,
+  BelongsTo,
 } from '@sequelize/core/decorators-legacy';
 import {Role} from './enum';
 import {hashPassword} from '@utils/password';
 import Payment from './payment.model';
-import PaymentMethod from './paymentMethod.model';
+import PaymentMethod from './payment-method.model';
 import Course from './course.model';
+import Department from './department.model';
 
 @Table({tableName: 'users'})
 export default class User extends Model<
@@ -142,14 +145,23 @@ export default class User extends Model<
   @NotNull
   declare role: string;
 
+  @NotNull
   @Attribute(DataTypes.STRING(255))
-  declare department: string;
+  declare departmentId: string;
 
   @HasMany(() => Payment, 'userId')
   declare payments: NonAttribute<Payment[]>;
 
   @HasMany(() => PaymentMethod, 'userId')
   declare paymentMethods: NonAttribute<PaymentMethod[]>;
+
+  @BelongsTo(() => Department, {
+    foreignKey: {
+      name: 'departmentId',
+      onDelete: 'SET NULL',
+    },
+  })
+  declare department: NonAttribute<Department>;
 
   @Attribute({
     type: DataTypes.DATE,

@@ -17,6 +17,7 @@ import {
   HasMany,
 } from '@sequelize/core/decorators-legacy';
 import Faculty from './faculty.model';
+import User from './user.model';
 import Course from './course.model';
 
 @Table({tableName: 'department'})
@@ -72,11 +73,24 @@ export default class Department extends Model<
   @NotNull
   declare facultyId: string;
 
-  @BelongsTo(() => Faculty, 'facultyId')
+  @BelongsTo(() => Faculty, {
+    foreignKey: {
+      name: 'facultyId',
+      onDelete: 'SET NULL',
+    }
+  })
   declare faculty?: NonAttribute<Faculty>;
 
   @HasMany(() => Course, 'departmentId')
   declare courses?: NonAttribute<Course[]>;
+
+  @HasMany(() => User, {
+    foreignKey: {
+      name: 'departmentId',
+      onDelete: 'SET NULL',
+    }
+  })
+  declare users?: NonAttribute<User[]>;
 
   @Attribute(DataTypes.TEXT)
   declare description: CreationOptional<string>;

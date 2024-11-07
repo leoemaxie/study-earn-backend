@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from 'express';
 import {BadRequest, NotFound} from '@utils/error';
-import PaymentMethod from '@models/paymentMethod.model';
+import PaymentMethod from '@models/payment-method.model';
 
 export async function addPaymentMethod(
   req: Request,

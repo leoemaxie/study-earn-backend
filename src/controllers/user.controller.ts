@@ -3,13 +3,13 @@ import {BadRequest, ServerError} from '@utils/error';
 import {del} from '@services/user.file.service';
 import {formatUser} from '@utils/format';
 import {computeMetadata} from '@utils/pagination';
+import {validateQuery} from '@utils/query';
 import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
 import Course from '@models/course.model';
 import * as sns from '@services/notification.service';
 import Department from '@models/department.model';
-import {validateQuery} from '@utils/query';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -121,7 +121,7 @@ export async function getUsers(
     if (faculty) queryOptions.where.facultyId = String(faculty);
     if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (id) queryOptions.where.id = String(id);
-    if (department) queryOptions.where.department = String(department);
+    if (department) queryOptions.where.departmentId = String(department);
     if (role) queryOptions.where.role = String(role);
 
     const users = await User.findAndCountAll({
@@ -190,7 +190,7 @@ export async function getCourses(
         {
           model: Department,
           where: {
-            name: department ? department : req.user.department,
+            id: department ? department : req.user.departmentId,
           },
           attributes: [],
         },

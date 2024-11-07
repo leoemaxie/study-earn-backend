@@ -7,6 +7,9 @@ export function formatUser(user: User) {
     user;
   const formattedData = Object.keys(userData).reduce(
     (acc, key) => {
+      if (key === 'department.name') {
+        acc.department = {name: userData[key]};
+      }
       if (key.startsWith(`${user.role}.`)) {
         acc[key.replace(`${user.role}.`, '')] = userData[key];
       } else {
@@ -16,6 +19,11 @@ export function formatUser(user: User) {
     },
     {} as Record<string, any>
   );
+  formattedData.department = user['department.name'];
+  formattedData.faculty = user['department.faculty.name'];
+  delete formattedData['department.name'];
+  delete formattedData['department.faculty.name'];
+  delete formattedData['department.faculty.id']
 
   formattedData.updatedAt = new Date(
     Math.max(

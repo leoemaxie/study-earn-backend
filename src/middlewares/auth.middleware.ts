@@ -3,6 +3,8 @@ import {Forbidden, NotFound, Unauthorized} from '@utils/error';
 import jwt from 'jsonwebtoken';
 import User from '@models/user.model';
 import Role from '@models/enum/role.model';
+import Department from '@models/department.model';
+import Faculty from '@models/faculty.model';
 
 export default async function authMiddleware(
   req: Request,
@@ -31,6 +33,15 @@ export default async function authMiddleware(
               model: Role[role],
               as: role,
               attributes: {exclude: ['id', 'userId', 'createdAt']},
+            }, {
+              model: Department,
+              attributes: ['name'],
+              include: [
+                {
+                  model: Faculty,
+                  attributes: ['name'],
+                },
+              ],
             },
           ],
           raw: true,

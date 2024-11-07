@@ -13,11 +13,11 @@ router.delete('', userController.deleteUser);
 router.get('/users', userController.getUsers);
 router.post('/notification', userController.sendNotification);
 router.use('/file', fileRoute);
-router.use('/payment/method', paymentRoute);
+router.use('/payment/method/', paymentRoute);
 router.get('/payment/redeem', paymentController.redeemPoints);
 router.get('/payment/history', paymentController.getPaymentHistory);
 router.get('/courses', userController.getCourses);
-router.get('/activity', activityController.getActivities);
+router.get('/activity/:id', activityController.getActivities);
 router.delete('/activity/:id', activityController.deleteActivity);
 
 export default router;
