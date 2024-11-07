@@ -11,8 +11,7 @@ export async function getActivities(
   next: NextFunction
 ) {
   try {
-    const {limit = 50, offset = 0, type, page} = req.query;
-    const {id} = req.params;
+    const {limit = 50, offset = 0, type, page, id} = req.query;
     const queryOptions: any = {
       limit: Number(limit),
       offset: Number(offset),
@@ -22,21 +21,15 @@ export async function getActivities(
       attributes: {exclude: ['userId']},
     };
 
-    if (id) {
-      const activity = await Activity.findOne({
-        where: {id: Number(id), userId: req.user.id},
-      });
-      if (!activity) throw new NotFound('Activity not found');
-      return res.status(200).json(activity);
-    }
-
     validateQuery(req, {
       ...DEFAULT_QUERY_FIELDS,
       type: 'string',
+      id: 'number',
     });
     queryOptions.where.userId = req.user.id;
     if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (type) queryOptions.where.type = type;
+    if (id) queryOptions.where.id = id;
 
     const {rows, count} = await Activity.findAndCountAll(queryOptions);
     const metadata = computeMetadata(req, count, Number(limit), Number(offset));
@@ -53,7 +46,7 @@ export async function deleteActivity(
   next: NextFunction
 ) {
   try {
-    const {id} = req.params;
+    const {id} = req.query;
 
     if (!id) {
       await Activity.destroy({where: {userId: req.user.id}});
@@ -66,7 +59,6 @@ export async function deleteActivity(
       throw new NotFound('Activity not found');
     }
 
-    await activity.destroy();
     return res.status(204).end();
   } catch (error: unknown) {
     return next(error);

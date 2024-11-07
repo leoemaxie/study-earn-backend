@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import {BadRequest, NotFound} from '@utils/error';
 import PaymentMethod from '@models/payment-method.model';
+import { validateQuery } from '@utils/query';
 
 export async function addPaymentMethod(
   req: Request,
@@ -41,8 +42,10 @@ export async function getPaymentMethod(
   next: NextFunction
 ) {
   try {
-    const {id} = req.params;
+    const {id} = req.query;
     let paymentMethod;
+
+    validateQuery(req, {id: 'string'});
 
     if (!id) {
       paymentMethod = await PaymentMethod.findAll({
@@ -75,6 +78,12 @@ export async function updatePaymentMethod(
       throw new BadRequest('Payment method ID is required');
     }
 
+    Object.keys(req.body).forEach((key) => {
+      if (!['accountNumber', 'accountName', 'bankName'].includes(key)) {
+        throw new BadRequest('Invalid field');
+      }
+    });
+
     const paymentMethod = await PaymentMethod.findOne({
       where: {id: String(id), userId: req.user.id},
     });
@@ -94,19 +103,21 @@ export async function deletePaymentMethod(
   next: NextFunction
 ) {
   try {
-    const {id} = req.params;
+    const {id} = req.query;
 
-    if (!id) {
-      throw new BadRequest('Payment method ID is required');
+    validateQuery(req, {id: 'string'});
+
+    if (id) {
+      const paymentMethod = await PaymentMethod.findOne({
+        where: {id: String(id), userId: req.user.id},
+      });
+      if (!paymentMethod) {
+        throw new NotFound('Payment method not found');
+      }
+    } else {
+      await PaymentMethod.destroy({where: {userId: req.user.id}});
     }
 
-    const paymentMethod = await PaymentMethod.findOne({
-      where: {id: String(id), userId: req.user.id},
-    });
-    if (!paymentMethod) {
-      throw new NotFound('Payment method not found');
-    }
-    await paymentMethod.destroy();
     return res.status(204).end();
   } catch (error) {
     return next(error);

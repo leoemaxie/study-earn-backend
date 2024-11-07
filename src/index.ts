@@ -38,6 +38,7 @@ const BASE_URL = `/api/${VERSION}`;
     .catch(console.error);
 })();
 
+app.set('trust proxy', true);
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

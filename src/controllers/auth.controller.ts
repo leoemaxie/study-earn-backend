@@ -21,7 +21,7 @@ export async function register(
       'role',
       'firstName',
       'lastName',
-      'department',
+      'departmentId',
       'phoneNumber',
     ];
 
@@ -46,7 +46,7 @@ export async function register(
         {
           userId: user.id,
           type: 'register',
-          description: 'User registered',
+          description: 'User registered. Thank you for signing up',
           metadata: {status: 'success', ip: req.ip},
         },
         {transaction}

@@ -3,9 +3,9 @@ import * as paymentController from '@controllers/payment-method.controller';
 
 const router = Router();
 
-router.post('', paymentController.addPaymentMethod);
-router.get(':id', paymentController.getPaymentMethod);
-router.patch(':id', paymentController.updatePaymentMethod);
-router.delete(':id', paymentController.deletePaymentMethod);
+router.post('/', paymentController.addPaymentMethod);
+router.get('/', paymentController.getPaymentMethod);
+router.patch('/:id', paymentController.updatePaymentMethod);
+router.delete('/', paymentController.deletePaymentMethod);
 
 export default router;
