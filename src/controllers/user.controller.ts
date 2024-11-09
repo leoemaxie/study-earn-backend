@@ -8,8 +8,9 @@ import RoleModel from '@models/enum/role.model';
 import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
 import Course from '@models/course.model';
-import * as sns from '@services/notification.service';
 import Department from '@models/department.model';
+import * as sns from '@services/notification.service';
+import Faculty from '@models/faculty.model';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -47,20 +48,18 @@ export async function updateUserData(
     });
 
     await User.sequelize.transaction(async transaction => {
-      await User.update(userData, {where: {id}, transaction});
+      const [affectedCount] = await User.update(userData, {where: {id}, transaction});
+      if (affectedCount === 0) throw new BadRequest('User not found');
+
       await RoleModel[role].update(roleData, {
-        where: {userId: id},
-        transaction,
+      where: {userId: id},
+      transaction,
       });
+
+      Object.assign(user, userData, roleData);
     });
 
-    const updated = await User.findOne({
-      where: {id},
-      include: [{model: RoleModel[role], as: role}],
-      raw: true,
-    });
-
-    return res.status(200).json({data: formatUser(updated as User)});
+    return res.status(200).json({data: formatUser(user as User)});
   } catch (error) {
     return next(error);
   }

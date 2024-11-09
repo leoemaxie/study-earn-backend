@@ -108,12 +108,11 @@ export async function deletePaymentMethod(
     validateQuery(req, {id: 'string'});
 
     if (id) {
-      const paymentMethod = await PaymentMethod.findOne({
-        where: {id: String(id), userId: req.user.id},
-      });
+      const paymentMethod = await PaymentMethod.findByPk(id);
       if (!paymentMethod) {
         throw new NotFound('Payment method not found');
       }
+      await paymentMethod.destroy();
     } else {
       await PaymentMethod.destroy({where: {userId: req.user.id}});
     }
