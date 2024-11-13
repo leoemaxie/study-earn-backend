@@ -4,6 +4,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import http from 'http';
+import admin from 'firebase-admin'
 import authRoute from '@routes/auth.route';
 import userRoute from '@routes/user.route';
 import schoolRoute from '@routes/school.route';
@@ -37,6 +38,8 @@ const BASE_URL = `/api/${VERSION}`;
     .then(() => console.log('Database synced'))
     .catch(console.error);
 })();
+
+admin.initializeApp();
 
 app.set('trust proxy', true);
 app.use(helmet());
