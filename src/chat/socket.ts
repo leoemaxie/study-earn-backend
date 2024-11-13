@@ -8,6 +8,7 @@ import Message from '@schemas/message.schema';
 import User from '@schemas/user.schema';
 import Room from '@schemas/room.schema';
 import Activity from '@models/activity.model';
+import { time, timeStamp } from 'console';
 
 const URL = process.env.MONGO_URI || 'mongodb://localhost:27017/chat';
 const path = `api/${process.env.VERSION || 'v1'}/chat`;
@@ -28,6 +29,15 @@ export async function connectIO(io: Server) {
     User.findOneAndUpdate({_id: user._id}, {online: true}).catch(e =>
       console.error(e)
     );
+    console.log('User connected');
+
+    socket.on('getUsers', async () => {
+      await User.find({online: true}, 'name id role')
+      .then(users => {
+        socket.emit('users', users);
+      })
+      .catch(e => socket.emit('error', formatError(e)));
+    });
 
     socket.on('joinRoom', async r => {
       Room.findOne({name: r})
@@ -41,7 +51,7 @@ export async function connectIO(io: Server) {
         .catch(e => socket.emit('error', formatError(e)));
     });
 
-    socket.on('adUserToRoom', async name => {
+    socket.on('addUserToRoom', async name => {
       await Room.findOne({name})
         .then(room => {
           if (!room) {
@@ -163,8 +173,9 @@ export async function connectIO(io: Server) {
         .then(_ => {
           chat.emit('message', {
             id: user._id,
-            message: data.message,
+            message: `Hello ${user.name}. Chat is unavailable now, please try again later.`,
             user: user.name,
+            timeStamp: new Date()
           });
         })
         .catch(e => socket.emit('error', formatError(e)));

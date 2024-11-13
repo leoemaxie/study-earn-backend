@@ -54,8 +54,12 @@ export default async function errorMiddleware(
       .json({error: {name: 'BadRequest', message: error.message}});
   }
 
+  if (error instanceof SyntaxError && 'body' in error) {
+    return res
+      .status(400)
+      .json({error: {name: 'BadRequest', message: error.message}});
+  }
   console.error(error);
-
   return res.status(500).json({
     error: {
       name: 'ServerError',

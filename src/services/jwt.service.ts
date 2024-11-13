@@ -21,7 +21,7 @@ const generateToken = (user: User, time: string, secret: string) => {
 const generateAccessToken = (user: User) => {
   const token = generateToken(
     user,
-    '15m',
+    '30d',
     process.env.ACCESS_TOKEN_SECRET || ''
   );
 

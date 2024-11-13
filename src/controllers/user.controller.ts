@@ -5,12 +5,12 @@ import {formatUser} from '@utils/format';
 import {computeMetadata} from '@utils/pagination';
 import {validateQuery} from '@utils/query';
 import RoleModel from '@models/enum/role.model';
-import ALLOWED_FIELDS, {CUSTOM_FIELDS} from '@utils/fields';
+import ALLOWED_FIELDS, {CUSTOM_FIELDS, DEFAULT_QUERY_FIELDS} from '@utils/fields';
 import User from '@models/user.model';
 import Course from '@models/course.model';
 import Department from '@models/department.model';
 import * as sns from '@services/notification.service';
-import Faculty from '@models/faculty.model';
+import Staff from '@models/staff.model';
 
 export function getUserData(req: Request, res: Response, next: NextFunction) {
   try {
@@ -48,9 +48,7 @@ export async function updateUserData(
     });
 
     await User.sequelize.transaction(async transaction => {
-      const [affectedCount] = await User.update(userData, {where: {id}, transaction});
-      if (affectedCount === 0) throw new BadRequest('User not found');
-
+      await User.update(userData, {where: {id}, transaction});
       await RoleModel[role].update(roleData, {
       where: {userId: id},
       transaction,
@@ -89,7 +87,7 @@ export async function getUsers(
       limit = 50,
       offset = 0,
       role,
-      department,
+      departmentId,
       id,
       faculty,
       order,
@@ -103,14 +101,13 @@ export async function getUsers(
       order:
         typeof order === 'string'
           ? [order.split(',')]
-          : [['department', 'DESC']],
+          : [['departmentId', 'DESC']],
     };
 
     validateQuery(req, {
-      limit: 'number',
-      offset: 'number',
+      ...DEFAULT_QUERY_FIELDS,
       role: 'string',
-      department: 'string',
+      departmentId: 'string',
       id: 'number',
       faculty: 'number',
       order: 'string',
@@ -120,18 +117,32 @@ export async function getUsers(
     if (faculty) queryOptions.where.facultyId = String(faculty);
     if (page) queryOptions.offset = (Number(page) - 1) * Number(limit);
     if (id) queryOptions.where.id = String(id);
-    if (department) queryOptions.where.departmentId = String(department);
+    if (departmentId) queryOptions.where.departmentId = String(departmentId);
     if (role) queryOptions.where.role = String(role);
 
     const users = await User.findAndCountAll({
       ...queryOptions,
       attributes: [
+        'id',
         'firstName',
         'lastName',
         'phoneNumber',
         'email',
+        'picture',
         'role',
-        'department',
+        'departmentId',
+        'updatedAt',
+      ],
+      include: [
+        {
+          model: Staff,
+          attributes: ['position', 'directorate'],
+          required: role === 'staff',
+        }, {
+          model: Department,
+          attributes: ['name'],
+          required: true,
+        }
       ],
     });
 
@@ -161,6 +172,21 @@ export async function sendNotification(
       body,
     });
     if (!sent) return next(new ServerError('Failed to send notification'));
+    return res.sendStatus(204);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+export async function registerDeviceTokens(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const {token} = req.body;
+    const registered = await sns.registerDeviceToken(token);
+    if (!registered) return next(new ServerError('Failed to register tokens'));
     return res.sendStatus(204);
   } catch (error) {
     return next(error);

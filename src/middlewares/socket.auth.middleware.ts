@@ -38,7 +38,7 @@ export default function socketAuthentication(
           {id},
           {$setOnInsert: {name: `${firstName} ${lastName}`, email, role}},
           {upsert: true, new: true}
-        );
+        )
 
         socket.request.user = chatUser;
         next();

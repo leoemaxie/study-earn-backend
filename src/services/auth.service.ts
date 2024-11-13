@@ -15,12 +15,12 @@ const OTP_SECRETS = process.env.OTP_SECRETS;
 
 const generateOTP = (email: string) => {
   const secret = OTP_SECRETS + email;
-  totp.options = {step: 60};
+  totp.options = {step: 120};
   let otp = totp.generate(secret);
 
   if (totp.timeRemaining() <= 10) {
     const newTotp = totp.create(totp.allOptions());
-    newTotp.options = {step: 60};
+    newTotp.options = {step: 120};
     otp = newTotp.generate(secret);
   }
 

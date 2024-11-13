@@ -31,7 +31,7 @@ export async function getDepartments(
         {
           model: Faculty,
           attributes: ['name'],
-          ...(faculty && {where: {name: String(faculty)}}),
+          ...(faculty && {where: {id: String(faculty)}}),
         },
       ],
       order: [['name', 'ASC']],

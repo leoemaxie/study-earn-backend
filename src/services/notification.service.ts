@@ -38,3 +38,16 @@ export async function sendNotification(content: {
     return false;
   }
 }
+
+export async function registerDeviceToken(token: string): Promise<Boolean> {
+  try {
+    const db = admin.firestore();
+    const docRef = db.collection('fcmTokens').doc();
+    await docRef.set({ token });
+    console.log('Device token registered successfully');
+    return true;
+  } catch (error) {
+    console.error('Error registering device token:', error);
+    return false;
+  }
+};
